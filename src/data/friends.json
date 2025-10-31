@@ -1,0 +1,14 @@
+[
+    {
+      "name": "Netlify",
+      "url": "https://www.netlify.com",
+      "icon": "https://www.netlify.com/apple-touch-icon.png",
+      "description": "本站CDN"
+    },
+    {
+      "name": "THW’s Blog",
+      "url": "https://tianhw.top",
+      "icon": "https://tianhw.top/.netlify/images?url=_astro%2Favatar.Br1DRb7s.webp",
+      "description": "前途似海，来日方长"
+    }
+  ]

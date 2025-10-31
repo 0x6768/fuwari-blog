@@ -1,0 +1,97 @@
+// scripts/generate-friends-page.js
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// 获取当前文件路径
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+async function generateFriendsPage() {
+  try {
+    // 1. 读取友链数据
+    // 读取 friends.json 文件
+    console.log('[*] Reading friends data...');
+
+    const dataPath = path.join(__dirname, '../src/data/friends.json');
+    const friends = JSON.parse(await fs.readFile(dataPath, 'utf-8'));
+
+    // 2. 生成 Astro 页面模板
+    const astroTemplate = `---
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { Icon } from "astro-icon/components";
+---
+
+<MainGridLayout title="友链">
+  <div class="card-base p-6 md:p-8">
+    <!-- 标题 -->
+    <div class="flex items-center gap-2 mb-6">
+      <div class="h-8 w-8 rounded-lg bg-[var(--primary)] flex items-center justify-center text-white dark:text-black/70">
+        <Icon name="material-symbols:diversity-3" class="text-[1.5rem]" />
+      </div>
+      <h1 class="text-2xl font-bold text-black dark:text-white">友链</h1>
+    </div>
+
+    <!-- 友链列表 -->
+    <div class="grid grid-cols-2 gap-4">
+      ${friends.map(friend => `
+      <a
+        href="${friend.url}"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="friend-card"
+      >
+        <div class="flex items-center gap-2">
+          <img
+            src="${friend.icon}"
+            alt="${friend.name}"
+            loading="lazy"
+            class="w-5 h-5 rounded"
+          />
+          <div class="font-bold text-black dark:text-white">
+            ${friend.name}
+          </div>
+        </div>
+        <div class="text-sm text-black/50 dark:text-white/50">
+          ${friend.description}
+        </div>
+      </a>
+      `).join('')}
+    </div>
+
+    <!-- 申请友链 -->
+    <div class="sponsors-section mt-8">
+      <h2 class="text-xl font-bold text-black dark:text-white mb-4 flex items-center gap-2">
+        <Icon name="material-symbols:group" class="text-[1.5rem] text-[var(--primary)]" />
+        将您的网站加入本站友链
+      </h2>
+      <p class="text-sm text-black/60 dark:text-white/60">
+        发送邮件到 <code>xxyang233@foxmail.com</code>
+      </p>
+      <small>修改自：https://github.com/afoim/fuwari/blob/main/src/pages/friends.astro</small>
+    </div>
+  </div>
+</MainGridLayout>
+
+<style>
+  .friend-card {
+    @apply flex flex-col gap-1 p-4 rounded-lg bg-[var(--card-bg)] hover:bg-black/5 dark:hover:bg-white/5 transition;
+  }
+</style>
+`;
+
+    // 3. 写入到目标文件
+    const outputPath = path.join(__dirname, '../src/pages/friends.astro');
+    await fs.writeFile(outputPath, astroTemplate);
+    
+    console.log('[-] Friends page generated successfully: src/pages/friends.astro');
+  } catch (err) {
+    console.error('[X] Generate friends page failed:', err);
+    process.exit(1);
+  }
+}
+
+
+console.log('[*] Start generate friends page...');
+
+generateFriendsPage();

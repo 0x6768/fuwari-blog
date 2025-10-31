@@ -1,0 +1,66 @@
+---
+
+import { profileConfig } from "../config";
+import { url } from "../utils/url-utils";
+
+const currentYear = new Date().getFullYear();
+---
+
+
+<div class="bg-[oklch(95%_0.01_var(--hue))] dark:bg-[oklch(15%_0.01_var(--hue))] rounded-xl p-6 md:p-8 flex flex-col items-center gap-4">
+  <div class="text-sm text-center text-gray-600 dark:text-gray-300 space-y-3">
+    <div>
+      &copy; <span id="copyright-year">2023-2025</span> {profileConfig.name}. All Rights Reserved.
+    </div>
+    
+    <div class="flex items-center justify-center gap-4">
+      <a class="transition link text-[var(--primary)] font-medium hover:opacity-80" 
+         target="_blank" 
+         href={url('rss.xml')}>
+        RSS
+      </a>
+      <span class="text-gray-400">•</span>
+      <a class="transition link text-[var(--primary)] font-medium hover:opacity-80" 
+         target="_blank" 
+         href={url('sitemap-index.xml')}>
+        Sitemap
+      </a>
+      <span class="text-gray-400">•</span>
+      <a class="transition link text-[var(--primary)] font-medium hover:opacity-80" 
+      target="_blank" 
+      href="https://analysis.yang233.eu.org/share/dV8cZEmYB2VXKyJs/blog.yang233.eu.org">
+      统计
+      </a>
+      <span class="text-gray-400">•</span>
+      <a class="transition link text-[var(--primary)] font-medium hover:opacity-80" 
+      target="_blank" 
+      href="https://icp.gov.moe/?keyword=20240485">
+      萌ICP备20240485号
+      </a>
+    </div>
+    
+    <div class="flex items-center justify-center gap-3 pt-2">
+      <a href="https://astro.build/" class="transition link text-[var(--primary)] font-medium hover:opacity-80">Built with Astro</a>
+      <!-- <span class="text-gray-400">•</span> -->
+      <span class="text-gray-400" class="transition link text-[var(--primary)] font-medium hover:opacity-80">•</span>
+      <a href="https://github.com/saicaca/fuwari" class="transition link text-[var(--primary)] font-medium hover:opacity-80">Powered by Fuwari</a>
+      <span class="text-gray-400" >•</span>
+      <a href="https://twikoo.js.org" class="transition link text-[var(--primary)] font-medium hover:opacity-80">Comments by Twikoo</a>
+    </div>
+    
+    <div class="flex items-center justify-center gap-3 pt-2">
+      <a href="https://umami.is" class="transition link text-[var(--primary)] font-medium hover:opacity-80">Analytics by Umami</a>
+      <span class="text-gray-400">•</span>
+      <a href="https://netlify.com/" class="transition link text-[var(--primary)] font-medium hover:opacity-80">Deployed on Netlify Pages</a>
+    </div>
+  </div>
+</div>  
+
+
+
+<div id="custom" class="mt-6">
+  <script defer src="https://analysis.yang325.eu.org/script.js" data-website-id="ece50090-230b-4122-8d7e-89a6c9ff7fab"></script>
+</div>
+    
+  
+  </div>

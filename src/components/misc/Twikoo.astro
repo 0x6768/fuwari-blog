@@ -1,0 +1,69 @@
+---
+// src/components/Twikoo.astro
+interface Props {
+path: string;
+}
+
+const config = {
+
+el: "#twikoo-container",
+path: Astro.props.path,
+
+};
+
+---
+
+<div id="comment">
+  <button 
+    id="load-comment-btn" 
+    class="px-4 py-2 bg-[var(--primary)] text-white rounded-lg hover:opacity-90 transition"
+  >
+    加载评论
+  </button>
+  
+  <div id="twikoo-container" class="hidden mt-4"></div>
+</div>
+
+<script define:vars={{ config }}>
+  document.getElementById('load-comment-btn').addEventListener('click', async () => {
+    const btn = document.getElementById('load-comment-btn');
+    const container = document.getElementById('twikoo-container');
+    
+    btn.textContent = '加载中...';
+    btn.disabled = true;
+    
+    try {
+      // 确保只加载一次
+     
+        // 创建script标签加载twikoo
+        await new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = 'https://cdn.jsdelivr.net/npm/twikoo@1.6.39/dist/twikoo.all.min.js';
+          script.onload = resolve;
+          script.onerror = () => reject(new Error('Twikoo脚本加载失败'));
+          document.head.appendChild(script);
+        });
+        
+        // 额外等待确保twikoo完全初始化
+        await new Promise(resolve => setTimeout(resolve, 300));
+      
+      
+      if (typeof twikoo === 'undefined') {
+        throw new Error('Twikoo未正确初始化');
+      }
+      
+      container.classList.remove('hidden');
+      twikoo.init({
+        ...config,
+        envId: "https://twikoo2.yang751892.eu.org",
+        lang: 'zh-CN',
+        
+      });
+      btn.remove();
+    } catch (err) {
+      btn.textContent = '加载失败，点击重试';
+      btn.disabled = false;
+      console.error('评论加载失败:', err);
+    }
+  });
+</script>
