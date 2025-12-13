@@ -7,14 +7,13 @@
     "dev": "astro dev",
     "start": "astro dev",
     "check": "astro check",
-    "build": "astro build && pagefind --site dist",
+    "build": "pnpm friends && astro build && pagefind --site dist",
     "preview": "astro preview",
     "astro": "astro",
     "type-check": "tsc --noEmit --isolatedDeclarations",
     "new-post": "node scripts/new-post.js",
     "format": "biome format --write ./src",
-    "lint": "biome check --write ./src",
-    "deploy": "node scripts/friends.js & netlify deploy --prod --site 0de9c487-f4cc-4a66-8885-21cb7c8bf754"
+    "lint": "biome check --write ./src"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",

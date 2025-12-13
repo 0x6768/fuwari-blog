@@ -4,7 +4,7 @@ published: 2025-07-29
 description: '在当今的互联网时代，用户互动是网站成功的关键因素之一。一个优秀的评论系统不仅能增强用户参与度，还能为网站内容提供宝贵的反馈。本文将详细介绍如何为网站设计和部署一个功能完善的评论系统。'
 image: ''
 tags: ['Twikoo','Fuwari','评论功能','Cloudflare']
-category: ''
+category: 搭建一个Fuwari博客
 draft: false 
 lang: ''
 order: 0
@@ -266,8 +266,81 @@ const pathname = Astro.url.pathname;  //添加这一行
 
 无论你是使用 **Fuwari、Hexo、Astro** 还是其他静态博客，都可以轻松集成 Twikoo，让你的网站真正“活”起来。
 
+
+## 补充
+
+为了减少**Cloudflare Workers**的调用次数，我们可以增加手动加点机制示例代码如下：
+```astro
+---
+// src/components/Twikoo.astro
+interface Props {
+path: string;
+}
+
+const config = {
+
+el: "#twikoo-container",
+path: Astro.props.path,
+
+};
+
 ---
 
+<div id="comment">
+  <button 
+    id="load-comment-btn" 
+    class="btn-regular rounded-lg h-10 gap-2 px-3 font-bold active:scale-95"
+  >
+  加载评论
+  </button>
+  
+  <div id="twikoo-container" class="hidden mt-4"></div>
+</div>
+
+<script define:vars={{ config }}>
+  document.getElementById('load-comment-btn').addEventListener('click', async () => {
+    const btn = document.getElementById('load-comment-btn');
+    const container = document.getElementById('twikoo-container');
+    
+    btn.textContent = '加载中...';
+    btn.disabled = true;
+    
+    try {
+      // 确保只加载一次
+     
+        // 创建script标签加载twikoo
+        await new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = 'https://cdn.jsdelivr.net/npm/twikoo@1.6.39/dist/twikoo.all.min.js';
+          script.onload = resolve;
+          script.onerror = () => reject(new Error('Twikoo脚本加载失败'));
+          document.head.appendChild(script);
+        });
+        
+        // 额外等待确保twikoo完全初始化
+        await new Promise(resolve => setTimeout(resolve, 300));
+      
+      
+      if (typeof twikoo === 'undefined') {
+        throw new Error('Twikoo未正确初始化');
+      }
+      
+      container.classList.remove('hidden');
+      twikoo.init({
+        ...config,
+        envId: "https://twikoo.7003410.xyz",
+        lang: 'zh-CN',
+        
+      });
+      btn.remove();
+    } catch (err) {
+      btn.textContent = '加载失败，点击重试';
+      btn.disabled = false;
+      console.error('评论加载失败:', err);
+    }
+  });
+</script>
+```
 **参考文章：**
 
 - [为 Hexo 添加 Twikoo 评论（blog.mingy.org）](https://blog.mingy.org/2024/12/hexo-add-twikoo/)

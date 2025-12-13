@@ -11,10 +11,7 @@ const postsCollection = defineCollection({
 		tags: z.array(z.string()).optional().default([]),
 		category: z.string().optional().nullable().default(""),
 		lang: z.string().optional().default(""),
-		order: z.number().default(0).refine(
-			(val) => [-1, 0, 1].includes(val),
-			{ message: "order 只能是 -1(置底), 0(默认), 或 1(置顶)" }
-		  ),
+		order: z.number().default(0),
 		/* For internal use */
 		prevTitle: z.string().default(""),
 		prevSlug: z.string().default(""),

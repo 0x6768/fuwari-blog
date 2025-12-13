@@ -1,5 +1,5 @@
+headersOrigin = "config"
 plugins = []
-headers = []
 redirects = []
 
 [functions]
@@ -8,8 +8,8 @@ redirects = []
 
 [build]
 publish = "E:\\1qw\\az\\blog\\dist"
-publishOrigin = "ui"
-commandOrigin = "ui"
+publishOrigin = "config"
+commandOrigin = "config"
 command = "pnpm run build"
 
 [build.environment]
@@ -25,3 +25,9 @@ command = "pnpm run build"
 [build.processing.js]
 
 [build.services]
+
+[[headers]]
+for = "/_astro/*"
+
+[headers.values]
+Cache-Control = "public, max-age=31536000, immutable"

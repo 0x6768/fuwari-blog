@@ -1,5 +1,7 @@
 ---
 // src/components/Twikoo.astro
+
+import { extendedConfig } from "../../config.ts";
 interface Props {
 path: string;
 }
@@ -8,7 +10,7 @@ const config = {
 
 el: "#twikoo-container",
 path: Astro.props.path,
-
+envId: extendedConfig.twikoo.envId,
 };
 
 ---
@@ -16,15 +18,16 @@ path: Astro.props.path,
 <div id="comment">
   <button 
     id="load-comment-btn" 
-    class="px-4 py-2 bg-[var(--primary)] text-white rounded-lg hover:opacity-90 transition"
+    class="btn-regular rounded-lg h-10 gap-2 px-3 font-bold active:scale-95"
   >
-    加载评论
+  加载评论
   </button>
   
   <div id="twikoo-container" class="hidden mt-4"></div>
 </div>
 
 <script define:vars={{ config }}>
+  
   document.getElementById('load-comment-btn').addEventListener('click', async () => {
     const btn = document.getElementById('load-comment-btn');
     const container = document.getElementById('twikoo-container');
@@ -33,12 +36,13 @@ path: Astro.props.path,
     btn.disabled = true;
     
     try {
-      // 确保只加载一次
+        // 不检测，每次都重新加载！
+      // 反正 Swup 已经把之前的 DOM 都清理了
      
         // 创建script标签加载twikoo
         await new Promise((resolve, reject) => {
           const script = document.createElement('script');
-          script.src = 'https://cdn.jsdelivr.net/npm/twikoo@1.6.39/dist/twikoo.all.min.js';
+          script.src = 'https://jsd.onmicrosoft.cn/gh/yoghurtlee-thu/customcdn@352853c/js/twikoo/1_6_39.min.js';
           script.onload = resolve;
           script.onerror = () => reject(new Error('Twikoo脚本加载失败'));
           document.head.appendChild(script);
@@ -55,7 +59,6 @@ path: Astro.props.path,
       container.classList.remove('hidden');
       twikoo.init({
         ...config,
-        envId: "https://twikoo2.yang751892.eu.org",
         lang: 'zh-CN',
         
       });

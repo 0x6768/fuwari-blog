@@ -3,7 +3,7 @@ import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import { getCategoryUrl } from "@utils/url-utils.ts";
 
-export async function getSortedPosts() {
+async function getRawSortedPosts() {
 	const allBlogPosts = await getCollection("posts", ({ data }) => {
 		return import.meta.env.PROD ? data.draft !== true : true;
 	});
@@ -20,6 +20,12 @@ export async function getSortedPosts() {
 		const dateB = new Date(b.data.published);
 		return dateA > dateB ? -1 : 1;
 	});
+	
+	return sorted;
+}
+
+export async function getSortedPosts() {
+	const sorted = await getRawSortedPosts();
 
 	// 下面的 next/prev 链接逻辑保持不变
 	for (let i = 1; i < sorted.length; i++) {
@@ -33,7 +39,6 @@ export async function getSortedPosts() {
 
 	return sorted;
 }
-
 export type Tag = {
 	name: string;
 	count: number;

@@ -4,7 +4,7 @@ published: 2025-07-28
 description: 'Fuwari 是一个极简、轻量级的静态博客主题，专为追求简洁与速度的写作者设计。它基于 Astro 构建，支持 Markdown 写作、暗黑模式、响应式布局，并且完全免费开源。本文将带你从零开始，快速搭建一个属于自己的 Fuwari 博客，并部署到 Netlify 上，全程无需服务器或复杂配置。'
 image: ''
 tags: ['Netlify','Fuwari']
-category: ''
+category: '搭建一个Fuwari博客'
 draft: false 
 lang: ''
 order: 0
@@ -181,6 +181,23 @@ pnpm build
 
 - 每次更新文章后，需运行`pnpm run deploy`
 - 使用 Git 管理版本（推荐托管到 GitHub/GitLab），并开启 Netlify 的自动部署功能（连接仓库后，每次 push 自动构建）。
+
+## 补充
+
+推荐在根域名下创建`netlify.toml`文件，用于配置Netlify的部署行为。
+
+示例内容如下：
+```toml title="netlify.toml"
+[build]
+command = "pnpm run build"
+publish = "dist"
+
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable" # 因为使用了哈希版本控制，所以说缓存可以任性
+```
+
 
 ---
 

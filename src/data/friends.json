@@ -8,7 +8,13 @@
     {
       "name": "THW’s Blog",
       "url": "https://tianhw.top",
-      "icon": "https://tianhw.top/.netlify/images?url=_astro%2Favatar.Br1DRb7s.webp",
+      "icon": "https://image.tianhw.top/avatar.webp",
       "description": "前途似海，来日方长"
+    },
+    {
+      "name": "AcoFork Blog",
+      "url": "https://blog.2b2x.cn/",
+      "icon": "https://q2.qlogo.cn/headimg_dl?dst_uin=2726730791&spec=0",
+      "description": "Protect What You Love."
     }
   ]

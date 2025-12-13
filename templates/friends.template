@@ -15,75 +15,29 @@ import { Icon } from "astro-icon/components";
 
     <!-- 友链列表 -->
     <div class="grid grid-cols-2 gap-4">
-      
+      ${friends.map(friend => `
       <a
-        href="https://www.netlify.com"
+        href="${friend.url}"
         target="_blank"
         rel="noopener noreferrer"
         class="friend-card"
       >
         <div class="flex items-center gap-2">
           <img
-            src="https://www.netlify.com/apple-touch-icon.png"
-            alt="Netlify"
+            src="${friend.icon}"
+            alt="${friend.name}"
             loading="lazy"
             class="w-5 h-5 rounded"
           />
           <div class="font-bold text-black dark:text-white">
-            Netlify
+            ${friend.name}
           </div>
         </div>
         <div class="text-sm text-black/50 dark:text-white/50">
-          本站CDN
+          ${friend.description}
         </div>
       </a>
-    
-
-      <a
-        href="https://tianhw.top"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="friend-card"
-      >
-        <div class="flex items-center gap-2">
-          <img
-            src="https://tianhw.top/.netlify/images?url=_astro%2Favatar.Br1DRb7s.webp"
-            alt="THW’s Blog"
-            loading="lazy"
-            class="w-5 h-5 rounded"
-          />
-          <div class="font-bold text-black dark:text-white">
-            THW’s Blog
-          </div>
-        </div>
-        <div class="text-sm text-black/50 dark:text-white/50">
-          前途似海，来日方长
-        </div>
-      </a>
-    
-
-      <a
-        href="https://blog.2b2x.cn/"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="friend-card"
-      >
-        <div class="flex items-center gap-2">
-          <img
-            src="https://q2.qlogo.cn/headimg_dl?dst_uin=2726730791&spec=0"
-            alt="AcoFork Blog"
-            loading="lazy"
-            class="w-5 h-5 rounded"
-          />
-          <div class="font-bold text-black dark:text-white">
-            AcoFork Blog
-          </div>
-        </div>
-        <div class="text-sm text-black/50 dark:text-white/50">
-          Protect What You Love.
-        </div>
-      </a>
-    
+      `).join('')}
     </div>
 
     <!-- 申请友链 -->

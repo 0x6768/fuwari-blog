@@ -91,3 +91,9 @@ export type BlogPostData = {
 export type ExpressiveCodeConfig = {
 	theme: string;
 };
+
+export type ExtendedConfig = {
+	twikoo: {
+		envId: string;
+	};
+};

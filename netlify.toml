@@ -1,8 +1,31 @@
 [build]
-command = "pnpm run build"
-publish = "dist"
+  command = "pnpm run build"
+  publish = "dist"
 
+# 1. Astro 静态资源（JS/CSS/资源） - 长期缓存
 [[headers]]
   for = "/_astro/*"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+    Cache-Control = "public, max-age=31536000, immutable"  # 1年缓存，内容不变
+    Vary = "Accept-Encoding"  # 考虑压缩差异
+
+# 2. 首页 - 即时验证（适合频繁更新的首页）
+[[headers]]
+  for = "/"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"  # 总是验证内容是否变化
+    ETag = "true"  # 启用 ETag 验证
+
+# 3. 博客文章页
+[[headers]]
+  for = "/posts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate" # 总是验证内容是否变化
+    ETag = "true"
+
+# 4. 其他静态资源（图片/字体等）
+[[headers]]
+  for = "/*.(jpg|jpeg|png|gif|ico|svg|webp|woff2|ttf)"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"  # 30天缓存
+    Vary = "Accept-Encoding"

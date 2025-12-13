@@ -4,7 +4,7 @@ published: 2025-07-30
 description: ''
 image: ''
 tags: ['Fuwari','SEO']
-category: ''
+category: '搭建一个Fuwari博客'
 draft: false 
 lang: ''
 order: 0
@@ -18,6 +18,9 @@ order: 0
 
 首先，我们需要在全局布局组件中添加关键的元信息（meta tags），确保每一页都能正确输出 SEO 数据。
 
+> [!NOTE]
+> 感谢ChuwuYo的宝贵建议。
+
 ```html title="src/layouts/Layout.astro"
 <!DOCTYPE html>
 <html lang={siteLang} class="bg-[var(--page-bg)] transition text-[14px] md:text-[16px]"
@@ -26,7 +29,7 @@ order: 0
    <title>{pageTitle}</title>
 
 		<meta charset="UTF-8" />
-		<meta name="description" content={description || pageTitle}>
+		<meta name="description" content={description || siteConfig.description}> <!-- 更改 -->
 		<meta name="author" content={profileConfig.name}>
 
 		<meta property="og:site_name" content={siteConfig.title}>
@@ -38,7 +41,7 @@ order: 0
         ) : (
         <meta property="og:type" content="website" />
         )}
-		<meta name="keywords" content={siteConfig.keywords}> <!-- 新增 -->
+		
 		<meta name="description" content={description || pageTitle}>  <!-- 新增 -->
 		<meta name="twitter:card" content="summary_large_image">
 		<meta property="twitter:url" content={Astro.url}>
