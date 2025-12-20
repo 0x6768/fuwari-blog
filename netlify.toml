@@ -1,5 +1,5 @@
 [build]
-  command = "pnpm run build"
+  command = "pnpm run build:app"
   publish = "dist"
 
 # 1. Astro 静态资源（JS/CSS/资源） - 长期缓存

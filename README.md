@@ -3,7 +3,6 @@
 > [!CAUTION]
 > 该仓库由 0x6768 深度定制，并包含了最新的文章，如果你想以此为模板进行二改，需要一定的动手能力。
 
-> [!INFO]
 > 本项目最初是 fork 自 [Fuwari](https://github.com/saicaca/fuwari)，但 GitHub 的 fork 关系丢失
 
 一个基于 Astro 构建的现代化个人博客主题，专注于技术分享与实践。
