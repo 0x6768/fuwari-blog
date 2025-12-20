@@ -141,7 +141,7 @@
 		  bg-black/[0.04] hover:bg-black/[0.06] focus-within:bg-black/[0.06]
 		  dark:bg-white/5 dark:hover:bg-white/10 dark:focus-within:bg-white/10
 	">
-		<Icon icon="material-symbols:search" class="absolute text-[1.25rem] pointer-events-none ml-3 transition my-auto text-black/30 dark:text-white/30"></Icon>
+		<Icon icon="mdi:search" class="absolute text-[1.25rem] pointer-events-none ml-3 transition my-auto text-black/30 dark:text-white/30"></Icon>
 		<input placeholder="搜索" bind:value={keywordDesktop} on:focus={() => search(keywordDesktop, true)}
 			   class="transition-all pl-10 text-sm bg-transparent outline-0
 			 h-full w-40 active:w-60 focus:w-60 text-black/50 dark:text-white/50"
@@ -151,7 +151,7 @@
 	<!-- toggle btn for phone/tablet view -->
 	<button on:click={togglePanel} aria-label="Search Panel" id="search-switch"
 			class="btn-plain scale-animation lg:!hidden rounded-lg w-11 h-11 active:scale-90">
-		<Icon icon="material-symbols:search" class="text-[1.25rem]"></Icon>
+		<Icon icon="mdi:search" class="text-[1.25rem]"></Icon>
 	</button>
 	
 	<!-- search panel -->
@@ -163,7 +163,7 @@
 		  bg-black/[0.04] hover:bg-black/[0.06] focus-within:bg-black/[0.06]
 		  dark:bg-white/5 dark:hover:bg-white/10 dark:focus-within:bg-white/10
 	  ">
-			<Icon icon="material-symbols:search" class="absolute text-[1.25rem] pointer-events-none ml-3 transition my-auto text-black/30 dark:text-white/30"></Icon>
+			<Icon icon="mdi:search" class="absolute text-[1.25rem] pointer-events-none ml-3 transition my-auto text-black/30 dark:text-white/30"></Icon>
 			<input placeholder="Search" bind:value={keywordMobile}
 				   class="pl-10 absolute inset-0 text-sm bg-transparent outline-0
 				   focus:w-60 text-black/50 dark:text-white/50"

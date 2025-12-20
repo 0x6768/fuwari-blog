@@ -7,15 +7,16 @@ import { Icon } from "astro-icon/components";
   <div class="card-base p-6 md:p-8">
     <!-- 标题 -->
     <div class="flex items-center gap-2 mb-6">
-      <div class="h-8 w-8 rounded-lg bg-[var(--primary)] flex items-center justify-center text-white dark:text-black/70">
-        <Icon name="material-symbols:diversity-3" class="text-[1.5rem]" />
+      <div
+        class="h-8 w-8 rounded-lg bg-[var(--primary)] flex items-center justify-center text-white dark:text-black/70"
+      >
+        <Icon name="mdi:account-group" class="text-[1.5rem]" />
       </div>
       <h1 class="text-2xl font-bold text-black dark:text-white">友链</h1>
     </div>
 
     <!-- 友链列表 -->
     <div class="grid grid-cols-2 gap-4">
-      
       <a
         href="https://www.netlify.com"
         target="_blank"
@@ -29,15 +30,10 @@ import { Icon } from "astro-icon/components";
             loading="lazy"
             class="w-5 h-5 rounded"
           />
-          <div class="font-bold text-black dark:text-white">
-            Netlify
-          </div>
+          <div class="font-bold text-black dark:text-white">Netlify</div>
         </div>
-        <div class="text-sm text-black/50 dark:text-white/50">
-          本站CDN
-        </div>
+        <div class="text-sm text-black/50 dark:text-white/50">本站CDN</div>
       </a>
-    
 
       <a
         href="https://tianhw.top"
@@ -47,23 +43,20 @@ import { Icon } from "astro-icon/components";
       >
         <div class="flex items-center gap-2">
           <img
-            src="https://tianhw.top/.netlify/images?url=_astro%2Favatar.Br1DRb7s.webp"
+            src="https://image.tianhw.top/avatar.webp"
             alt="THW’s Blog"
             loading="lazy"
             class="w-5 h-5 rounded"
           />
-          <div class="font-bold text-black dark:text-white">
-            THW’s Blog
-          </div>
+          <div class="font-bold text-black dark:text-white">THW’s Blog</div>
         </div>
         <div class="text-sm text-black/50 dark:text-white/50">
           前途似海，来日方长
         </div>
       </a>
-    
 
       <a
-        href="https://blog.2b2x.cn/"
+        href="https://blog.acofork.com/"
         target="_blank"
         rel="noopener noreferrer"
         class="friend-card"
@@ -75,27 +68,28 @@ import { Icon } from "astro-icon/components";
             loading="lazy"
             class="w-5 h-5 rounded"
           />
-          <div class="font-bold text-black dark:text-white">
-            AcoFork Blog
-          </div>
+          <div class="font-bold text-black dark:text-white">AcoFork Blog</div>
         </div>
         <div class="text-sm text-black/50 dark:text-white/50">
           Protect What You Love.
         </div>
       </a>
-    
     </div>
 
     <!-- 申请友链 -->
     <div class="sponsors-section mt-8">
-      <h2 class="text-xl font-bold text-black dark:text-white mb-4 flex items-center gap-2">
-        <Icon name="material-symbols:group" class="text-[1.5rem] text-[var(--primary)]" />
+      <h2
+        class="text-xl font-bold text-black dark:text-white mb-4 flex items-center gap-2"
+      >
+        <Icon name="mdi:group" class="text-[1.5rem] text-[var(--primary)]" />
         将您的网站加入本站友链
       </h2>
       <p class="text-sm text-black/60 dark:text-white/60">
         发送邮件到 <code>xxyang233@foxmail.com</code>
       </p>
-      <small>修改自：https://github.com/afoim/fuwari/blob/main/src/pages/friends.astro</small>
+      <small
+        >修改自：https://github.com/afoim/fuwari/blob/main/src/pages/friends.astro</small
+      >
     </div>
   </div>
 </MainGridLayout>
