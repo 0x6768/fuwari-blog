@@ -95,5 +95,9 @@ export type ExpressiveCodeConfig = {
 export type ExtendedConfig = {
 	twikoo: {
 		envId: string;
-	};
+	},
+	umami: {
+		baseUrl: string;
+		shareId: string;
+	},
 };

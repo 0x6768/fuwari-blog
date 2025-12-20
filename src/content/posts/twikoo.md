@@ -121,9 +121,9 @@ npx wrangler deploy --minify
 
 | 类型  | 名称       | 内容                            | 代理状态 |
 |-------|------------|---------------------------------|----------|
-| CNAME | `twikoo`   | `cloudflare.byoip.top`              | 关闭 |
+| CNAME | `twikoo`   | `	随便.cf.090227.xyz`              | 关闭 |
 
-> ✅ **说明**：`cloudflare.byoip.top` 是由社区提供的 Cloudflare 优选 IP 域名，其解析 IP 经过测速筛选，对国内访问延迟低、稳定性高，常用于 Workers 反代优化。
+> ✅ **说明**：`cf.090227.xyz` 是由[CMLiussss](https://blog.cmliussss.com/)提供的 Cloudflare 优选 IP 域名，其解析 IP 经过测速筛选，对国内访问延迟低、稳定性高，常用于 Workers 反代优化。
 
 #### 步骤 3：验证部署
 

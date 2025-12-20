@@ -1,0 +1,195 @@
+---
+import WidgetLayout from "./WidgetLayout.astro";
+import { extendedConfig } from "../../config.ts";
+const UMAMI_CONFIG = {
+    baseUrl: extendedConfig.umami.baseUrl,
+    shareId: extendedConfig.umami.shareId,
+}
+interface Props {
+  class?: string;
+  style?: string;
+}
+const { class: className, style } = Astro.props;
+---
+
+<WidgetLayout name="统计" id="umami-stats" class:list={[className]} {style}>
+
+    <div class="grid grid-cols-2 divide-x divide-neutral-200 dark:divide-neutral-700 text-center pt-2">
+        <div class="px-2">
+            <div class="text-xl font-bold text-neutral-900 dark:text-neutral-100" id="total-pageviews">-</div>
+            <div class="text-sm text-neutral-500 dark:text-neutral-400">总浏览量</div>
+        </div>
+        <div class="px-2">
+            <div class="text-xl font-bold text-neutral-900 dark:text-neutral-100" id="total-visitors">-</div>
+            <div class="text-sm text-neutral-500 dark:text-neutral-400">游客数</div>
+        </div>
+    </div>
+</WidgetLayout>
+
+<script define:vars={{ UMAMI_CONFIG }}>
+
+// 从本地存储获取缓存的令牌信息
+function getCachedToken() {
+    try {
+        const token = localStorage.getItem('umami-share-token');
+        const websiteId = localStorage.getItem('umami-website-id');
+        if (token && websiteId) {
+            return { token, websiteId };
+        }
+    } catch (e) {
+        console.warn('无法访问localStorage:', e);
+    }
+    return null;
+}
+
+// 保存令牌到本地存储
+function saveTokenToCache(token, websiteId) {
+    try {
+        localStorage.setItem('umami-share-token', token);
+        localStorage.setItem('umami-website-id', websiteId);
+    } catch (e) {
+        console.warn('无法保存到localStorage:', e);
+    }
+}
+
+// 清除缓存的令牌
+function clearTokenCache() {
+    try {
+        localStorage.removeItem('umami-share-token');
+        localStorage.removeItem('umami-website-id');
+    } catch (e) {
+        console.warn('无法清除localStorage:', e);
+    }
+}
+
+// 获取分享令牌
+async function fetchShareToken() {
+    try {
+        const response = await fetch(`${UMAMI_CONFIG.baseUrl}/api/share/${UMAMI_CONFIG.shareCode}`);
+        if (!response.ok) {
+            throw new Error(`获取令牌失败: ${response.status}`);
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('获取分享令牌失败:', error);
+        throw error;
+    }
+}
+
+// 获取统计数据
+async function fetchStats(websiteId, token) {
+    const endAt = Date.now();
+    const startAt = 0;
+    
+    const url = `${UMAMI_CONFIG.baseUrl}/api/websites/${websiteId}/stats?startAt=${startAt}&endAt=${endAt}&unit=hour&timezone=Asia%2FShanghai`;
+    
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            'accept': 'application/json',
+            'x-umami-share-token': token
+        }
+    });
+    
+    if (!response.ok) {
+        if (response.status === 401) {
+            // 令牌无效，清除缓存
+            clearTokenCache();
+            throw new Error('TOKEN_EXPIRED');
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    return await response.json();
+}
+
+// 显示统计数据
+function displayStats(data) {
+;    const pageviewsElement = document.getElementById('total-pageviews');
+    const visitorsElement = document.getElementById('total-visitors');
+    
+    if (pageviewsElement) {
+        pageviewsElement.textContent = data.pageviews || 0;
+    }
+    
+   
+    
+    if (visitorsElement) {
+        visitorsElement.textContent = data.visitors || 0;
+    }
+}
+
+// 显示错误状态
+function showError(message = '获取失败') {
+    const elements = ['total-pageviews', 'total-visitors'];
+    elements.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.textContent = message;
+            element.classList.add('text-red-500');
+        }
+    });
+}
+
+// 清除错误状态
+function clearError() {
+    const elements = ['total-pageviews', 'total-visitors'];
+    elements.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.classList.remove('text-red-500');
+        }
+    });
+}
+
+// 主流程：获取Umami统计数据
+async function fetchUmamiStats() {
+    try {
+        clearError();
+        
+        // 1. 尝试从缓存获取令牌
+        let cached = getCachedToken();
+        let statsData = null;
+        
+        if (cached) {
+            try {
+                // 2. 使用缓存的令牌获取数据
+                statsData = await fetchStats(cached.websiteId, cached.token);
+                displayStats(statsData);
+                return; // 成功获取，直接返回
+            } catch (error) {
+                if (error.message === 'TOKEN_EXPIRED') {
+                    console.log('令牌已过期，重新获取...');
+                } else {
+                    console.warn('使用缓存令牌获取数据失败:', error);
+                }
+                // 继续尝试获取新令牌
+            }
+        }
+        
+        // 3. 获取新的分享令牌
+        const shareData = await fetchShareToken();
+        const { websiteId, token } = shareData;
+        
+        // 4. 保存新令牌到缓存
+        saveTokenToCache(token, websiteId);
+        
+        // 5. 使用新令牌获取数据
+        statsData = await fetchStats(websiteId, token);
+        displayStats(statsData);
+        
+    } catch (error) {
+        console.error('获取Umami统计数据失败:', error);
+        showError('获取失败');
+    }
+}
+
+// 初始加载
+document.addEventListener('DOMContentLoaded', fetchUmamiStats);
+
+// 支持 Swup 页面切换
+// if (window.swup) {
+//     window.swup.hooks.on('page:view', fetchUmamiStats);
+// }
+</script>

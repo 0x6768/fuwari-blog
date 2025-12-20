@@ -1,0 +1,17 @@
+---
+import MainGridLayout from "../layouts/MainGridLayout.astro";
+---
+
+<MainGridLayout title="404 页面未找到" description="抱歉，您访问的页面不存在">
+    <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
+        <div class="card-base z-10 px-9 py-12 relative w-full text-center">
+            <h1 class="text-6xl font-bold mb-4 text-[var(--primary)]">404</h1>
+            <h2 class="text-2xl font-semibold mb-6 text-black/50 dark:text-white/50 ">页面未找到</h2>
+            <p class="text-lg mb-8 text-black/75 dark:text-white/75">
+                抱歉，您要查找的页面似乎不存在或已被移除。
+            </p>
+          
+           
+        </div>
+    </div>
+</MainGridLayout>
