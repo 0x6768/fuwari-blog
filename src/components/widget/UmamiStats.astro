@@ -1,7 +1,7 @@
 ---
 import WidgetLayout from "./WidgetLayout.astro";
 import { extendedConfig } from "../../config.ts";
-const UMAMI_CONFIG = {
+const config = {
     baseUrl: extendedConfig.umami.baseUrl,
     shareId: extendedConfig.umami.shareId,
 }
@@ -26,8 +26,8 @@ const { class: className, style } = Astro.props;
     </div>
 </WidgetLayout>
 
-<script define:vars={{ UMAMI_CONFIG }}>
-
+<script define:vars={{ config }}>
+const UMAMI_CONFIG = config;
 // 从本地存储获取缓存的令牌信息
 function getCachedToken() {
     try {
@@ -65,7 +65,7 @@ function clearTokenCache() {
 // 获取分享令牌
 async function fetchShareToken() {
     try {
-        const response = await fetch(`${UMAMI_CONFIG.baseUrl}/api/share/${UMAMI_CONFIG.shareCode}`);
+        const response = await fetch(`${UMAMI_CONFIG.baseUrl}/api/share/${UMAMI_CONFIG.shareId}`);
         if (!response.ok) {
             throw new Error(`获取令牌失败: ${response.status}`);
         }

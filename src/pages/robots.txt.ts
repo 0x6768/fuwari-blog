@@ -3,8 +3,8 @@ import type { APIRoute } from "astro";
 const robotsTxt = `
 User-agent: *
 Disallow: /_astro/
-Disallow: /wp-login/
-Disallow: /wp-admin/
+Disallow: /editor.html
+Disallow: /admin.html
 Sitemap: ${new URL("sitemap-index.xml", import.meta.env.SITE).href}
 `.trim();
 
