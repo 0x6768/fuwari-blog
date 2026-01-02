@@ -3,6 +3,12 @@
       "name": "Netlify",
       "url": "https://www.netlify.com",
       "icon": "https://www.netlify.com/apple-touch-icon.png",
+      "description": "本站托管平台"
+    },
+    {
+      "name":"Cloudflare",
+      "url": "https://www.cloudflare.com",
+      "icon": "https://qualified-production.s3.amazonaws.com/uploads/3b522ef84c409e4457032e4b4e3b984abbc92522c6f100f4ccc55c0ccfd3062b.png",
       "description": "本站CDN"
     },
     {
