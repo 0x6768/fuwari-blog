@@ -11,6 +11,9 @@
 - **内容协议**: [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)  
   ↳ 知识共享 版权归属-非商业性使用-相同方式共享 4.0 国际 公共许可证
 
+### 构建状态
+[![Deploy to Netlify](https://github.com/0x6768/fuwari-blog/actions/workflows/deploy.yaml/badge.svg)](https://github.com/0x6768/fuwari-blog/actions/workflows/deploy.yaml)
+
 ## 内容声明
 📌 **所有文章均为原创**，采用以下共享规则：
 - ✅ **允许**: 转载/修改（需署名+相同协议）

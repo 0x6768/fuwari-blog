@@ -1,0 +1,31 @@
+---
+import I18nKey from "../../i18n/i18nKey";
+import { i18n } from "../../i18n/translation";
+import ButtonTag from "../control/ButtonTag.astro";
+import WidgetLayout from "./WidgetLayout.astro";
+
+// 直接在组件中定义链接数据
+const links = [
+  { name: "开往Travelling", href: "https://www.travellings.cn/typewriter.html", label: "一个友链接力项目，旨在通过网络跳转的方式将流量引入那些鲜为人知的独立站点，从而推动网络的开放性和多元性。" },
+  
+];
+
+const COLLAPSED_HEIGHT = "7.5rem";
+const isCollapsed = links.length >= 20;
+
+interface Props {
+	class?: string;
+	style?: string;
+}
+const className = Astro.props.class;
+const style = Astro.props.style;
+---
+<WidgetLayout name="链接" id="links" isCollapsed={isCollapsed} collapsedHeight={COLLAPSED_HEIGHT} class={className} style={style}>
+    <div class="flex gap-2 flex-wrap">
+        {links.map(link => (
+            <ButtonTag href={link.href} label={link.label}>
+                {link.name}
+            </ButtonTag>
+        ))}
+    </div>
+</WidgetLayout>

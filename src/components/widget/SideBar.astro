@@ -4,6 +4,7 @@ import Categories from "./Categories.astro";
 import Profile from "./Profile.astro";
 import Tag from "./Tags.astro";
 import UmamiStats from "./UmamiStats.astro";
+import Link from "./Link.astro";
 
 interface Props {
 	class?: string;
@@ -20,6 +21,6 @@ const className = Astro.props.class;
         <UmamiStats class="onload-animation" style="animation-delay: 250ms"></UmamiStats>
         <Categories class="onload-animation" style="animation-delay: 150ms"></Categories>
         <Tag class="onload-animation" style="animation-delay: 200ms"></Tag>
-        
+        <Link class="onload-animation" style="animation-delay: 250ms"></Link>
     </div>
 </div>
