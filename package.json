@@ -3,11 +3,10 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "build:app": "pnpm prebuild && pnpm build && pnpm postbuild",
+    "build:app": "pnpm build && pnpm postbuild",
     "dev": "astro dev",
     "start": "astro dev",
     "check": "astro check",
-    "prebuild": "node scripts/friends.js",
     "build": "astro build",
     "postbuild": "pagefind --site dist",
     "preview": "astro preview",
