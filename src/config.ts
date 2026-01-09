@@ -16,7 +16,7 @@ export const siteConfig: SiteConfig = {
 	description: "分享网络技术、服务器部署、静态网站搭建、CDN优化、无服务器架构、前后端开发等技术教程与实践经验的个人技术博客，专注于云原生、无服务器架构和前后端开发。",
 	// themeColor: {
 	themeColor: {
-		hue: 250, // Default hue for the theme color, from 0 to 360. e.g. red: 0, teal: 200, cyan: 250, pink: 345
+		hue: 170, // Default hue for the theme color, from 0 to 360. e.g. red: 0, teal: 200, cyan: 250, pink: 345
 		fixed: true, // Hide the theme color picker for visitors
 	},
 	banner: {

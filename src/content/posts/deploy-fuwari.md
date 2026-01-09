@@ -1,5 +1,5 @@
 ---
-title: 搭建一个 Fuwari 博客（一）：快速部署与基本配置
+title: 快速部署指南：搭建一个 Fuwari 博客（一）
 published: 2025-07-28
 description: 'Fuwari 是一个极简、轻量级的静态博客主题，专为追求简洁与速度的写作者设计。它基于 Astro 构建，支持 Markdown 写作、暗黑模式、响应式布局，并且完全免费开源。本文将带你从零开始，快速搭建一个属于自己的 Fuwari 博客，并部署到 Netlify 上，全程无需服务器或复杂配置。'
 image: ''

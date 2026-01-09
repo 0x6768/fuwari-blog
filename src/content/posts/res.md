@@ -1,5 +1,5 @@
 ---
-title: 前后端常用资源库（如jsDelivr）访问延迟高，这些替代方案帮你加速！
+title: jsDelivr访问延迟高，这些替代方案帮你加速！
 published: 2025-01-25
 description: ''
 image: ''

@@ -1,5 +1,5 @@
 ---
-title: 搭建一个Fuwari博客（三）：SEO配置
+title: SEO配置：搭建一个Fuwari博客（三）
 published: 2025-07-30
 description: ''
 image: ''
@@ -179,6 +179,10 @@ Google Search Console 是 Google 提供的免费网站管理工具，用于帮�
 访问 [Google Search Console](https://search.google.com/search-console)
 
 按照提示操作即可，无需额外配置。
+
+## 特别提醒
+
+千万不要用**免费域名**,千万不要用**免费域名**,千万不要用**免费域名**,别问我是怎么知道(说多了都是泪)
 
 ---
 
