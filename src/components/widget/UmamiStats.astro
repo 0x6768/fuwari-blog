@@ -1,4 +1,5 @@
 ---
+import { Icon } from "astro-icon/components";
 import WidgetLayout from "./WidgetLayout.astro";
 import { extendedConfig } from "../../config.ts";
 const config = {
@@ -16,12 +17,13 @@ const { class: className, style } = Astro.props;
 
     <div class="grid grid-cols-2 divide-x divide-neutral-200 dark:divide-neutral-700 text-center pt-2">
         <div class="px-2">
-            <div class="text-xl font-bold text-neutral-900 dark:text-neutral-100" id="total-pageviews">-</div>
-            <div class="text-sm text-neutral-500 dark:text-neutral-400">总浏览量</div>
+             <Icon name="mdi:visibility" class="text-[1rem] inline-block text-neutral-500 dark:text-neutral-400"></Icon><span class="text-sm text-neutral-500 dark:text-neutral-400">访问量</span><div class="text-lg font-bold text-neutral-900 dark:text-neutral-100" id="total-pageviews">-</div>
+          
         </div>
         <div class="px-2">
-            <div class="text-xl font-bold text-neutral-900 dark:text-neutral-100" id="total-visitors">-</div>
-            <div class="text-sm text-neutral-500 dark:text-neutral-400">游客数</div>
+            <Icon name="mdi:person" class="text-[1rem] inline-block text-neutral-500 dark:text-neutral-400"></Icon>
+            <span class="text-sm text-neutral-500 dark:text-neutral-400">访客数</span><div class="text-lg font-bold text-neutral-900 dark:text-neutral-100" id="total-visitors">-</div>
+            
         </div>
     </div>
 </WidgetLayout>
