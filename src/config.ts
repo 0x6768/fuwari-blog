@@ -12,8 +12,10 @@ export const siteConfig: SiteConfig = {
 	title: "晓正杨博客",
 	subtitle: "让代码更有价值，让学生生活不再枯燥",
 	lang: "zh_CN",
-	keywords: "前端,网络技术,服务器部署,静态网站搭建,CDN优化,无服务器架构,前后端开发",
-	description: "分享网络技术、服务器部署、静态网站搭建、CDN优化、无服务器架构、前后端开发等技术教程与实践经验的个人技术博客，专注于云原生、无服务器架构和前后端开发。",
+	keywords:
+		"前端,网络技术,服务器部署,静态网站搭建,CDN优化,无服务器架构,前后端开发",
+	description:
+		"分享网络技术、服务器部署、静态网站搭建、CDN优化、无服务器架构、前后端开发等技术教程与实践经验的个人技术博客，专注于云原生、无服务器架构和前后端开发。",
 	// themeColor: {
 	themeColor: {
 		hue: 170, // Default hue for the theme color, from 0 to 360. e.g. red: 0, teal: 200, cyan: 250, pink: 345
@@ -34,12 +36,11 @@ export const siteConfig: SiteConfig = {
 		depth: 2, // Maximum heading depth to show in the table, from 1 to 3
 	},
 	favicon: [
-		
 		{
-		  src: 'https://q1.qlogo.cn/g?b=qq&nk=2540797494&s=640',    // Path of the favicon, relative to the /public directory
-		  theme: 'light',              // (Optional) Either 'light' or 'dark', set only if you have different favicons for light and dark mode
-		  sizes: '32x32',              // (Optional) Size of the favicon, set only if you have favicons of different sizes
-		}
+			src: "https://q1.qlogo.cn/g?b=qq&nk=2540797494&s=640", // Path of the favicon, relative to the /public directory
+			theme: "light", // (Optional) Either 'light' or 'dark', set only if you have different favicons for light and dark mode
+			sizes: "32x32", // (Optional) Size of the favicon, set only if you have favicons of different sizes
+		},
 	],
 };
 
@@ -57,10 +58,7 @@ export const navBarConfig: NavBarConfig = {
 			name: "开往",
 			url: "https://www.travellings.cn/typewriter.html",
 			external: true, // Show an external link icon and will open in a new tab
-		}
-		
-
-		
+		},
 	],
 };
 
@@ -69,7 +67,6 @@ export const profileConfig: ProfileConfig = {
 	name: "晓正杨",
 	bio: "让代码更有价值，让学生生活不再枯燥",
 	links: [
-		
 		{
 			name: "",
 			icon: "fa6-brands:github",
@@ -79,7 +76,7 @@ export const profileConfig: ProfileConfig = {
 			name: "Bili",
 			icon: "fa6-brands:bilibili",
 			url: "https://space.bilibili.com/493847518",
-		}
+		},
 	],
 };
 
@@ -95,8 +92,7 @@ export const expressiveCodeConfig: ExpressiveCodeConfig = {
 	theme: "github-dark",
 };
 
-
-export const extendedConfig:ExtendedConfig = {
+export const extendedConfig: ExtendedConfig = {
 	twikoo: {
 		envId: "https://twikoo.7003410.xyz",
 	},

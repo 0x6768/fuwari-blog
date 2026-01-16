@@ -3,16 +3,14 @@
 
 import { extendedConfig } from "../../config.ts";
 interface Props {
-path: string;
+	path: string;
 }
 
 const config = {
-
-el: "#twikoo-container",
-path: Astro.props.path,
-envId: extendedConfig.twikoo.envId,
+	el: "#twikoo-container",
+	path: Astro.props.path,
+	envId: extendedConfig.twikoo.envId,
 };
-
 ---
 
 <div id="comment">

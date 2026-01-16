@@ -14,13 +14,13 @@ async function getRawSortedPosts() {
 		if (a.data.order !== b.data.order) {
 			return b.data.order - a.data.order; // 降序：1(置顶)在前，-1(置底)在后
 		}
-		
+
 		// 第二优先级：order相同的情况下，按发布日期倒序
 		const dateA = new Date(a.data.published);
 		const dateB = new Date(b.data.published);
 		return dateA > dateB ? -1 : 1;
 	});
-	
+
 	return sorted;
 }
 
