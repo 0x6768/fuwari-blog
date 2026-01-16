@@ -1,5 +1,5 @@
 # .github/workflows/deploy.yml
-name: Deploy to Cloudflare Pages
+name: Deploy
 
 on:
   workflow_dispatch:  # 手动触发
