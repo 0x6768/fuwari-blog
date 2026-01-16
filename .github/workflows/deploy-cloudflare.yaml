@@ -28,14 +28,14 @@ jobs:
           cache: 'pnpm'
           
       - name: Install dependencies
-        run: pnpm install & pnpm i -g wrangler@latest
+        run: pnpm install & pnpm i -g wrangler
         
       - name: Build Project
         run: pnpm build
           
       - name: Deploy to Cloudflare Pages
         run: |
-          wrangler@latest pages deploy ./dist \
+          wrangler pages deploy ./dist \
             --project-name="${{ secrets.CF_PROJECT_NAME }}" \
             --branch="${GITHUB_REF#refs/heads/}" \
             --commit-hash="${{ github.sha }}" \
