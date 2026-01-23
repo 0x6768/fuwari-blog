@@ -1,5 +1,5 @@
 # .github/workflows/deploy.yml
-name: Deploy
+name: Build and Deploy 
 
 on:
   workflow_dispatch:  # 手动触发
