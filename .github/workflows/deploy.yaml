@@ -19,11 +19,11 @@ jobs:
         uses: oven-sh/setup-bun@v1
         with:
           bun-version: latest
-            
-     
-      
       - name: Install dependencies
-        run: bun install & bun i -g wrangler
+        run: bun install
+
+      - name: Install Wrangler CLI
+        run: bun i -g wrangler
         
       - name: Build Project
         run: bun run build
