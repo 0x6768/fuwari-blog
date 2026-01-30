@@ -1,33 +1,48 @@
 # .github/workflows/deploy.yml
-name: Build and Deploy 
+name: Build and Deploy
 
 on:
-  workflow_dispatch:  # 手动触发
-  push:               # 推送触发
-    branches: [ main, master ]
+  workflow_dispatch:
+  push:
+    branches: [main, master]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
         with:
           bun-version: latest
+      
+      # 👇 新增：缓存 Bun 依赖
+      - name: Cache Bun dependencies
+        uses: actions/cache@v4
+        id: bun-cache
+        with:
+          path: |
+            ~/.bun/install/cache
+            **/node_modules
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+      
       - name: Install dependencies
+        if: steps.bun-cache.outputs.cache-hit != 'true'
         run: bun install
-
+      
       - name: Install Wrangler CLI
         run: bun i -g wrangler
-        
+      
       - name: Build Project
         run: bun run build
-          
+      
       - name: Deploy to Cloudflare Pages
         run: |
           wrangler pages deploy ./dist \
@@ -36,5 +51,4 @@ jobs:
             --commit-hash="${{ github.sha }}" \
             --commit-message="${{ github.event.head_commit.message }}"
         env:
-          # Wrangler 需要的认证环境变量
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
