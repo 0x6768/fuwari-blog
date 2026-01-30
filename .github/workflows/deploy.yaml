@@ -37,15 +37,15 @@ jobs:
         if: steps.bun-cache.outputs.cache-hit != 'true'
         run: bun install
       
-      - name: Install Wrangler CLI
-        run: bun i -g wrangler
+      # - name: Install Wrangler CLI
+      #   run: bun i -g wrangler
       
       - name: Build Project
         run: bun run build
       
       - name: Deploy to Cloudflare Pages
         run: |
-          wrangler pages deploy ./dist \
+          bunx wrangler pages deploy ./dist \
             --project-name="${{ secrets.CF_PROJECT_NAME }}" \
             --branch="${GITHUB_REF#refs/heads/}" \
             --commit-hash="${{ github.sha }}" \
