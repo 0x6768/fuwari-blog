@@ -30,7 +30,7 @@ export default defineConfig({
 	base: "/",
 	trailingSlash: "ignore",
 	build:{
-		concurrency: 4
+		concurrency: 2
 	},
 	integrations: [
 		tailwind({

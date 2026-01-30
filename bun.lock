@@ -5,16 +5,15 @@
     "": {
       "name": "fuwari",
       "dependencies": {
-        "@astrojs/check": "0.9.6",
-        "@astrojs/rss": "4.0.15",
-        "@astrojs/sitemap": "3.7.0",
+        "@astrojs/check": "^0.9.6",
+        "@astrojs/rss": "^4.0.15",
+        "@astrojs/sitemap": "^3.7.0",
         "@astrojs/svelte": "7.2.5",
         "@astrojs/tailwind": "^6.0.2",
         "@expressive-code/core": "^0.41.2",
         "@expressive-code/plugin-collapsible-sections": "^0.41.2",
         "@expressive-code/plugin-line-numbers": "^0.41.2",
         "@fontsource-variable/jetbrains-mono": "^5.2.6",
-        "@fontsource/roboto": "^5.2.6",
         "@iconify-json/fa6-brands": "^1.2.5",
         "@iconify-json/fa6-regular": "^1.2.3",
         "@iconify-json/fa6-solid": "^1.2.3",
@@ -51,8 +50,8 @@
         "unist-util-visit": "^5.0.0",
       },
       "devDependencies": {
-        "@astrojs/markdown-remark": "6.3.10",
-        "@astrojs/ts-plugin": "1.10.6",
+        "@astrojs/markdown-remark": "^6.3.10",
+        "@astrojs/ts-plugin": "^1.10.6",
         "@biomejs/biome": "2.0.6",
         "@rollup/plugin-yaml": "^4.1.2",
         "@types/hast": "^3.0.4",
@@ -411,8 +410,6 @@
     "@expressive-code/plugin-text-markers": ["@expressive-code/plugin-text-markers@0.41.3", "https://registry.npmmirror.com/@expressive-code/plugin-text-markers/-/plugin-text-markers-0.41.3.tgz", { "dependencies": { "@expressive-code/core": "0.41.3" } }, "sha512-SN8tkIzDpA0HLAscEYD2IVrfLiid6qEdE9QLlGVSxO1KEw7qYvjpbNBQjUjMr5/jvTJ7ys6zysU2vLPHE0sb2g=="],
 
     "@fontsource-variable/jetbrains-mono": ["@fontsource-variable/jetbrains-mono@5.2.6", "https://registry.npmmirror.com/@fontsource-variable/jetbrains-mono/-/jetbrains-mono-5.2.6.tgz", {}, "sha512-1pvtyK6H1paBOixbtZ9xfQgArVQ4SJMW3WSGZPOd5PiW3yg0t8umwKnjDMzW2ofb7qSdiXnsnIaHPT36vEOdlg=="],
-
-    "@fontsource/roboto": ["@fontsource/roboto@5.2.6", "https://registry.npmmirror.com/@fontsource/roboto/-/roboto-5.2.6.tgz", {}, "sha512-hzarG7yAhMoP418smNgfY4fO7UmuUEm5JUtbxCoCcFHT0hOJB+d/qAEyoNjz7YkPU5OjM2LM8rJnW8hfm0JLaA=="],
 
     "@iconify-json/fa6-brands": ["@iconify-json/fa6-brands@1.2.6", "https://registry.npmmirror.com/@iconify-json/fa6-brands/-/fa6-brands-1.2.6.tgz", { "dependencies": { "@iconify/types": "2.0.0" } }, "sha512-twL3X4KWcxAhbc1vz/mIDsVr+CAItk1/EIfxKUVQtpv6O4eydk5KNYqTZWdvJNHGInUgd6vKg21aWfVgb5DXEg=="],
 

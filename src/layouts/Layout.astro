@@ -350,10 +350,10 @@ function initCustomScrollbar() {
 		katexObserver.observe(element);
 	});
 }
-function initCommentComponent() {
-  const event = new Event("loadComment");
-  document.dispatchEvent(event);
-}
+// function initCommentComponent() {
+//   const event = new Event("loadComment");
+//   document.dispatchEvent(event);
+// }
 function showBanner() {
 	if (!siteConfig.banner.enable) return;
 
@@ -371,7 +371,7 @@ function init() {
 	loadTheme();
 	loadHue();
 	initCustomScrollbar();
-	initCommentComponent();
+	// initCommentComponent();
 	showBanner();
 }
 
@@ -410,7 +410,7 @@ const setup = () => {
 	})
 	window.swup.hooks.on("content:replace", () => {
   initCustomScrollbar();
-  initCommentComponent(); // 添加代码调用
+//   initCommentComponent(); // 添加代码调用
 });
 	window.swup.hooks.on('visit:start', (visit: {to: {url: string}}) => {
 		// change banner height immediately when a link is clicked
