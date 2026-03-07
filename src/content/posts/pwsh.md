@@ -513,5 +513,3 @@ Set-Alias -Name time -Value Get-ExecutionTime
 
 ## 仓库
 ::github{repo="0x6768/pwsh-profile"}
-
-完
