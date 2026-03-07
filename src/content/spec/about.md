@@ -1,9 +1,10 @@
+
 # 关于本站
 
 ## 技术架构
 - **静态站点生成器**: [Fuwari](https://github.com/saicaca/fuwari)  
   ↳ 轻量级 Markdown 优先的 SSG，专注高效内容创作与极简体验
-- **托管服务**: Netlify Pages  
+- **托管服务**: Cloudflare Pages  
   ↳ 全球边缘网络加速.
 - **构建服务**: GitHub Actions  
   ↳ 自动构建和部署.
