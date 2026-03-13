@@ -1,12 +1,12 @@
 import type {
 	ExpressiveCodeConfig,
+	ExtendedConfig,
 	LicenseConfig,
 	NavBarConfig,
 	ProfileConfig,
 	SiteConfig,
-	ExtendedConfig,
-} from "./types/config";
-import { LinkPreset } from "./types/config";
+} from "@/types/config";
+import { LinkPreset } from "@/types/config";
 
 export const siteConfig: SiteConfig = {
 	title: "晓正杨博客",

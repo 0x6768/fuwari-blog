@@ -3,12 +3,20 @@ import ArchivePanel from "@components/ArchivePanel.svelte";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
-import { getSortedPosts } from "../utils/content-utils";
+import { getSortedPosts } from "@utils/content-utils";
 
 const sortedPosts = await getSortedPosts();
+
+// 从 URL 查询参数中获取 tags 和 categories
+const tags = Astro.url.searchParams.getAll("tag");
+const categories = Astro.url.searchParams.getAll("category");
 ---
 
 <MainGridLayout title={i18n(I18nKey.archive)}>
-    <ArchivePanel sortedPosts={sortedPosts} client:only="svelte"></ArchivePanel>
+    <ArchivePanel 
+        sortedPosts={sortedPosts} 
+        tags={tags}
+        categories={categories}
+        client:only="svelte"
+    ></ArchivePanel>
 </MainGridLayout>
-

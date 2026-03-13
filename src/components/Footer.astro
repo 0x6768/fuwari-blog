@@ -1,9 +1,10 @@
 ---
 
-import { profileConfig } from "../config";
-import { url } from "../utils/url-utils";
+import { url } from "@utils/url-utils";
 import { Icon } from "astro-icon/components";
 import { execSync } from "child_process";
+import { profileConfig } from "@/config";
+
 let GitCommitHash =
 	execSync("git rev-parse --short HEAD").toString().trim() || "unknown";
 const currentYear = new Date().getFullYear();

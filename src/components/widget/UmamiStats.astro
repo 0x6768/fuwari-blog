@@ -1,7 +1,8 @@
 ---
 import { Icon } from "astro-icon/components";
-import WidgetLayout from "./WidgetLayout.astro";
-import { extendedConfig } from "../../config.ts";
+import { extendedConfig } from "@/config.ts";
+import WidgetLayout from "@components/widget/WidgetLayout.astro";
+
 const config = {
 	baseUrl: extendedConfig.umami.baseUrl,
 	shareId: extendedConfig.umami.shareId,

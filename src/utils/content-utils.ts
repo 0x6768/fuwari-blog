@@ -3,7 +3,7 @@ import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import { getCategoryUrl } from "@utils/url-utils.ts";
 
-async function getRawSortedPosts() {
+export async function getRawSortedPosts() {
 	const allBlogPosts = await getCollection("posts", ({ data }) => {
 		return import.meta.env.PROD ? data.draft !== true : true;
 	});
@@ -37,7 +37,14 @@ export async function getSortedPosts() {
 		sorted[i].data.prevTitle = sorted[i + 1].data.title;
 	}
 
-	return sorted;
+	// 关键修复：转换类型，处理 category: null -> undefined
+	return sorted.map(post => ({
+		...post,
+		data: {
+			...post.data,
+			category: post.data.category ?? undefined,  // 转换 null 为 undefined
+		}
+	}));
 }
 export type Tag = {
 	name: string;
