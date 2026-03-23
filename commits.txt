@@ -1,0 +1,274 @@
+commit 06acee7cf4523d84ff216d788a144a1cf6fa1acc
+Author: 0x6768 <mystery128@qq.com>
+Date:   Fri Mar 13 22:40:18 2026 +0800
+
+    chore: 更新 GitHub Actions workflow actions 版本
+
+commit ad3101a15b60f2951a345cb0a35599df08977ef5
+Author: 0x6768 <mystery128@qq.com>
+Date:   Fri Mar 13 22:35:33 2026 +0800
+
+    fix: 在 main.css 中添加缺失的 @tailwind components 指令
+
+commit 810759a52b742a64d30185daa9446b3db78a8b0a
+Author: 0x6768 <mystery128@qq.com>
+Date:   Fri Mar 13 22:33:54 2026 +0800
+
+    fix: 修复 Tailwind CSS 类定义顺序导致的构建失败
+
+commit 4c99ccca88c1c94c08a116e339d01d3012ce834c
+Author: 0x6768 <mystery128@qq.com>
+Date:   Fri Mar 13 22:28:56 2026 +0800
+
+    style: replace relative paths with @ alias
+
+commit f62e3a6e294f21c737454b146e2cad1b17056cfb
+Author: 0x6768 <mystery128@qq.com>
+Date:   Sat Mar 7 19:41:55 2026 +0800
+
+    docs: PowerShell Profile更新
+
+commit 7fb62b29b0811c57effa700c7113aaa3abe43446
+Author: 0x6768 <mystery128@qq.com>
+Date:   Sat Mar 7 19:40:33 2026 +0800
+
+    docs: PowerShell Profile更新
+
+commit 520a0eaa76dac038646645de1f5f3e6ee8112e8a
+Author: 0x6768 <mystery128@qq.com>
+Date:   Sat Mar 7 19:39:13 2026 +0800
+
+    docs: 删除了一篇水文
+
+commit e9ee691c536a772ec72ae8ac935ba5474a29b0df
+Author: 0x6768 <mystery128@qq.com>
+Date:   Sat Mar 7 19:35:07 2026 +0800
+
+    feat(content): 新增HLS流媒体技术文章
+
+commit 3838affefaa004258ecaea42a5bf0569ad59816f
+Author: 0x6768 <mystery128@qq.com>
+Date:   Fri Jan 30 19:17:18 2026 +0800
+
+    Fix: resolve encoding issue in commit message
+
+commit 22f3a924b0c0d74a69d3e29ebaa30e94f19527eb
+Author: 0x6768 <mystery128@qq.com>
+Date:   Fri Jan 30 19:04:57 2026 +0800
+
+    ```
+    refactor(config): 调整构建并发数并更新依赖版本
+    
+    - 将 astro.config.mjs 中的构建并发数从 4 调整为 2
+    - 更新 bun.lock 文件中多个 @astrojs 相关包的版本号
+    - 移除 @fontsource/roboto 依赖包
+    - 更新 package.json 中的依赖配置
+    
+    perf(search): 移除内联 Pagefind 搜索脚本
+    
+    - 从 Navbar.astro 组件中移除 Pagefind 搜索功能的相关代码
+    - 移除异步加载和初始化 Pagefind 的 JavaScript 代码
+    
+    refactor(comments): 禁用评论组件初始化功能
+    
+    - 在 Layout.astro 布局文件中注释掉评论组件初始化函数
+    - 注释掉页面初始化和 swup 页面切换时的评论组件加载调用
+    ```
+
+commit efa61a5edccf3e209d924b1ecd48f3df53c50db2
+Author: 0x6768 <mystery128@qq.com>
+Date:   Fri Jan 30 18:44:19 2026 +0800
+
+    fix(deploy): 移除全局安装wrangler并使用bunx运行
+
+commit 411746503a4c12ec739eaad55cdcc2efc87e80a6
+Author: 0x6768 <mystery128@qq.com>
+Date:   Fri Jan 30 18:37:25 2026 +0800
+
+    chore(workflow): 添加Bun依赖缓存配置并优化部署流程
+
+commit 9eba2eca31465ecd6d12bb643afc3ea68195c6dd
+Author: 0x6768 <mystery128@qq.com>
+Date:   Fri Jan 23 19:19:59 2026 +0800
+
+    fix(build): 修复Pagefind构建命令配置
+
+commit beaefd5a9b56b5c673ad016e9713a3c834d4e26d
+Author: 0x6768 <mystery128@qq.com>
+Date:   Fri Jan 23 19:18:32 2026 +0800
+
+    chore(deploy): 分离依赖安装步骤
+
+commit dcaec71d98a571adfd241db9f80a7d16e47556f1
+Author: 0x6768 <mystery128@qq.com>
+Date:   Fri Jan 23 19:14:37 2026 +0800
+
+    feat(.github/workflows): 更新部署工作流配置
+
+commit c77c7b16b2d6c5a963620e9a1c57c8bcc8d11a37
+Author: 0x6768 <mystery128@qq.com>
+Date:   Fri Jan 23 19:06:19 2026 +0800
+
+    chore(deps): 更新依赖包版本 & 移除了 Roboto 字体的导入并在 Tailwind 配置中调整了字体设置
+
+commit 73b95ed27fbe2467c2266f3e6c7a777f681228a1
+Author: 0x6768 <mystery128@qq.com>
+Date:   Fri Jan 16 21:16:08 2026 +0800
+
+    styles: 移除未使用的type-check脚本并优化代码格式
+
+commit fa754356ddb3095163c0980ea8037525237d4f8d
+Author: 0x6768 <mystery128@qq.com>
+Date:   Fri Jan 16 21:12:21 2026 +0800
+
+    fix(styles): 修复markdown样式中的链接和代码块样式
+
+commit 9b474615279804260585fcc974c327906aaf92cd
+Author: 0x6768 <mystery128@qq.com>
+Date:   Fri Jan 16 21:09:23 2026 +0800
+
+    fix(deploy): 修复wrangler全局安装命令
+
+commit fd00459de4e3978d951f7ca2c75b1a22275cd365
+Author: 0x6768 <mystery128@qq.com>
+Date:   Fri Jan 16 21:07:45 2026 +0800
+
+    chore(workflow): 将部署工作流从pnpm切换到Bun
+
+commit 3a4e0ad04852f347a098f6db7bb3fba9dbbf03b6
+Author: 0x6768 <mystery128@qq.com>
+Date:   Fri Jan 16 19:48:11 2026 +0800
+
+    fix(headers): 修复缓存控制头格式错误
+
+commit e7f62fc918e0823322721270be0765789596c598
+Author: 0x6768 <mystery128@qq.com>
+Date:   Fri Jan 16 19:35:47 2026 +0800
+
+    chore(deploy): 简化部署工作流名称并移除Netlify配置
+
+commit 47718b2f5e5fd8e047d6189ef0b897c5cfc15020
+Author: 0x6768 <mystery128@qq.com>
+Date:   Fri Jan 16 19:04:37 2026 +0800
+
+    chore(fix): 修复了workflow部署失败的bug
+
+commit f1ba5c9bb149a0b2af61f33bacf51e040d9c0af3
+Author: 0x6768 <mystery128@qq.com>
+Date:   Fri Jan 16 19:03:12 2026 +0800
+
+    chore(deploy): 删除netlify部署workflow
+
+commit 0e54e9417ce0773faef1293badb8abd09991a69c
+Author: 0x6768 <mystery128@qq.com>
+Date:   Fri Jan 16 18:58:14 2026 +0800
+
+    chore(fix): 修复了workflow部署失败的bug
+
+commit c299cac7a23959e6445488cd404fa2c29c70ae6c
+Author: 0x6768 <mystery128@qq.com>
+Date:   Fri Jan 16 18:57:08 2026 +0800
+
+    chore(fix): 修复了workflow部署失败的bug(疑似已修复)
+
+commit 927219a7925d2a618a4772ced8d0122532e106a3
+Author: 0x6768 <mystery128@qq.com>
+Date:   Fri Jan 16 18:55:26 2026 +0800
+
+    chore(deploy): 支持 Cloudflare Pages 部署
+
+commit bf8dad141824139e770e7b60f5f872807339501c
+Author: 0x6768 <mystery128@qq.com>
+Date:   Fri Jan 9 22:54:37 2026 +0800
+
+    feat: 对图标、底部信息和样式进行了一定程度的调整
+
+commit 265e5d22b2b3cb6673b6c2919f3ecdd862ec589a
+Author: 0x6768 <mystery128@qq.com>
+Date:   Fri Jan 9 22:29:18 2026 +0800
+
+    posts: 增加了一篇文章"why-free-domain-is-bad-choice"
+
+commit afb2207849a5cf9dfc06a7cf6c07b3df46ffa69d
+Author: 0x6768 <mystery128@qq.com>
+Date:   Fri Jan 2 12:05:50 2026 +0800
+
+    fix/chore: 删除了未使用的scripts
+
+commit c1288f19669de4ec56123a1156a61eae2b17a2fe
+Author: 0x6768 <mystery128@qq.com>
+Date:   Fri Jan 2 12:04:19 2026 +0800
+
+    refactor/fix: 重构友链页面，使用数据驱动方式
+
+commit 6c6297eb7a7641b6b3bc777a6301ea5692cae9a1
+Author: 0x6768 <mystery128@qq.com>
+Date:   Fri Jan 2 11:43:25 2026 +0800
+
+    refactor: 将Git哈希注入迁移到Astro构建时
+
+commit c60f356a9ead032fd517646bf885c577a6b3e2b1
+Author: 0x6768 <mystery128@qq.com>
+Date:   Sat Dec 20 13:05:21 2025 +0800
+
+    chore: 移除未使用的 Material Symbols 依赖
+
+commit 8cc398076b2f3c79097bcaa7c0f32a216b7759c2
+Author: 0x6768 <mystery128@qq.com>
+Date:   Sat Dec 20 12:49:02 2025 +0800
+
+    refactor: 从 Material Symbols 切换为 Material Design Icons
+
+commit 4d6bc6b71dabe28cee3ddbbf58c1126c363f375e
+Author: 0x6768 <mystery128@qq.com>
+Date:   Sat Dec 20 11:25:16 2025 +0800
+
+    chore: update config files (GitHub Actions, package.json, netlify.toml)
+
+commit 5fd96021c572eae1bd43f1bf4a7ba4b52c814cef
+Author: 0x6768 <mystery128@qq.com>
+Date:   Sat Dec 20 11:02:50 2025 +0800
+
+    feat: 我也不知道增加了什么
+
+commit 860ab3f263040b44ebb0ed4ebc5df2a1a151194e
+Author: 0x6768 <mystery128@qq.com>
+Date:   Sat Dec 20 10:29:40 2025 +0800
+
+    aaaa
+
+commit a0b8937bef68f0653bfea062819e54fb4edf4417
+Author: 0x6768 <mystery128@qq.com>
+Date:   Fri Dec 19 20:10:04 2025 +0800
+
+    aaaaaaaaaa
+
+commit 96091ec709390cc595dc22f52f7da4874ddde7fe
+Author: 0x6768 <mystery128@qq.com>
+Date:   Sat Dec 13 21:20:36 2025 +0800
+
+    add post
+
+commit 93d323f0a5dac1e13a8e685478db35f99a0d30f1
+Author: 0x6768 <mystery128@qq.com>
+Date:   Sat Dec 13 20:48:02 2025 +0800
+
+    fix: bug for workflows
+
+commit 1cb6267b4c525ba448ae3454534f4a6fc1b7308d
+Author: 0x6768 <mystery128@qq.com>
+Date:   Sat Dec 13 20:40:03 2025 +0800
+
+    fix: 修复
+
+commit 809cc084b4ab2fc4fdbe51241b6d004e8efb2d50
+Author: 0x6768 <mystery128@qq.com>
+Date:   Sat Dec 13 20:35:54 2025 +0800
+
+    feat!: 全面重构核心架构（破坏性更新）
+
+commit e9dad3954271a9dfe3e05d9566e0b6397edc4b27
+Author: 0x6768 <mystery128@qq.com>
+Date:   Fri Oct 31 21:10:42 2025 +0800
+
+    Frist

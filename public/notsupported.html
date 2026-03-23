@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>浏览器版本过低</title>
+<style>
+/* 使用最保守、兼容性最好的CSS */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
+  background-color: #f5f5f5;
+  padding: 20px;
+  text-align: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 600px;
+  margin: 50px auto 0;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 30px 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+h1 {
+  font-size: 24px;
+  color: #d32f2f;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+p {
+  margin-bottom: 15px;
+  color: #555;
+}
+
+ul {
+  text-align: left;
+  margin: 20px 0 20px 20px;
+  padding-left: 20px;
+}
+
+li {
+  margin-bottom: 10px;
+  list-style-type: disc;
+}
+
+.browser-list {
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  padding: 20px 0;
+  margin: 20px 0;
+  overflow: hidden; /* 清除浮动 */
+}
+
+.browser-item {
+  width: 33.33%;
+  float: left;
+  padding: 0 10px;
+  margin-bottom: 15px;
+}
+
+.browser-name {
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.browser-version {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.btn {
+  display: inline-block;
+  background-color: #1976d2;
+  color: white;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 5px;
+}
+
+.btn:hover {
+  background-color: #1565c0;
+}
+
+.btn-secondary {
+  background-color: #757575;
+}
+
+.btn-secondary:hover {
+  background-color: #616161;
+}
+
+.code-block {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  padding: 10px;
+  margin: 15px 0;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  text-align: left;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.info-box {
+  background-color: #e8f5e9;
+  border-left: 4px solid #4caf50;
+  padding: 15px;
+  margin: 20px 0;
+  text-align: left;
+}
+
+.warning-box {
+  background-color: #fff3e0;
+  border-left: 4px solid #ff9800;
+  padding: 15px;
+  margin: 20px 0;
+  text-align: left;
+}
+
+.actions {
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.feature-name {
+  display: inline-block;
+  background-color: #e3f2fd;
+  color: #1565c0;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  margin: 0 3px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>浏览器版本过低</h1>
+  
+  <p>您的浏览器不支持本网站使用的现代特性。</p>
+  
+
+  
+  <p>为了获得完整功能体验，请升级您的浏览器版本</p>
+  
+  
+  <div class="warning-box">
+    <p><strong>为什么不使用旧版本？</strong></p>
+    <ul>
+      <li><strong>安全风险</strong>：旧版浏览器有已知安全漏洞</li>
+      <li><strong>性能低下</strong>：无法利用现代硬件加速</li>
+      <li><strong>兼容性问题</strong>：许多现代网站功能无法正常使用</li>
+    </ul>
+  </div>
+  
+  <div class="actions">
+    <a href="#" class="btn" onclick="tryAnyway()">仍要尝试访问</a>
+  </div>
+  
+ 
+</div>
+
+<script>
+
+
+
+
+// 强制访问主站
+function tryAnyway() {
+  const returnUrl = new URLSearchParams(window.location.search).get('return') || '/';
+  if (confirm('您确定要继续访问吗？部分功能可能无法正常工作。')) {
+    localStorage.setItem("FSkip",true)
+    window.location.href = returnUrl;
+  }
+  return false;
+}
+
+</script>
+</body>
+</html>
