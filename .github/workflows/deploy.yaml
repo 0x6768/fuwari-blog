@@ -16,17 +16,24 @@ jobs:
         with:
           fetch-depth: 0
       
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
         with:
-          node-version: '20'
-          cache: 'npm'
+          version: latest 
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+
       
       - name: Install dependencies
-        run: npm install
+        run: pnpm install
       
       - name: Build Project
-        run: npm run build
+        run: pnpm run build
       
       - name: Deploy to Cloudflare Pages
         run: |
