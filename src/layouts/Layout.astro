@@ -152,14 +152,10 @@ const bannerOffset =
 		  data-overlayscrollbars-initialize
 	>
 		<ConfigCarrier></ConfigCarrier>
-		<!-- 添加spin加载动画和遮罩 -->
-		<div id="loading-overlay" class="fixed inset-0 z-50 opacity-0 pointer-events-none transition-all duration-300">
-			<div class="absolute inset-0 bg-black/20 dark:bg-white/20 backdrop-blur-[2px]"></div>
-			<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-				<div class="relative w-12 h-12">
-					<div class="absolute inset-0 border-4 border-gray-200 dark:border-gray-700 rounded-full"></div>
-					<div class="absolute inset-0 border-4 border-transparent border-t-blue-500 dark:border-t-blue-400 rounded-full animate-spin"></div>
-				</div>
+		<!-- 添加顶部加载条 -->
+		<div id="loading-bar" class="fixed top-0 left-0 w-full h-1 z-[100] opacity-0 transition-all duration-300">
+			<div class="h-full bg-gradient-to-r from-blue-500 via-blue-400 to-blue-500 relative">
+				<div class="absolute inset-0 bg-gradient-to-r from-blue-500 via-blue-400 to-blue-500 loading-bar-shimmer"></div>
 			</div>
 		</div>
 		<slot />
@@ -201,36 +197,44 @@ const bannerOffset =
 	.navbar-hidden {
 		@apply opacity-0 -translate-y-16
 	}
-	/* 加载遮罩样式 */
-	#loading-overlay {
-		transition: opacity 0.3s ease;
+	/* 加载条样式 */
+	#loading-bar {
+		z-index: 100 !important;
+		transition: opacity 0.3s ease, transform 0.3s ease;
+		transform: translateY(-100%);
+		box-shadow: 0 1px 3px rgba(59, 130, 246, 0.3);
 	}
-	#loading-overlay.show {
-		@apply opacity-100 pointer-events-auto;
+	#loading-bar.show {
+		@apply opacity-100;
+		transform: translateY(0);
 	}
-	#loading-overlay.hide {
-		@apply opacity-0 pointer-events-none;
+	#loading-bar.hide {
+		@apply opacity-0;
+		transform: translateY(-100%);
 	}
-	@keyframes spin {
-		from {
-			transform: rotate(0deg);
+	.loading-bar-shimmer {
+		background-size: 200% 100%;
+		animation: shimmer 1.5s infinite linear;
+	}
+	@keyframes shimmer {
+		0% {
+			background-position: 200% 0;
 		}
-		to {
-			transform: rotate(360deg);
+		100% {
+			background-position: 0 0;
 		}
-	}
-	.animate-spin {
-		animation: spin 1s linear infinite;
 	}
 	/* 深色模式适配 */
-	.dark #loading-overlay .absolute.inset-0 {
-		@apply bg-white/20;
+	.dark #loading-bar {
+		@apply bg-gradient-to-r from-blue-500 via-blue-400 to-blue-500;
+		box-shadow: 0 1px 3px rgba(37, 99, 235, 0.4);
 	}
-	.dark #loading-overlay .border-gray-200 {
-		@apply border-gray-700;
+	.dark .loading-bar-shimmer {
+		@apply bg-gradient-to-r from-blue-500 via-blue-400 to-blue-500;
 	}
-	.dark #loading-overlay .border-t-blue-500 {
-		@apply border-t-blue-400;
+	/* 确保加载条在navbar上方 */
+	#navbar-wrapper {
+		z-index: 99;
 	}
 }
 </style>
@@ -297,15 +301,29 @@ function disableAnimation() {
 }
 */
 
-const bannerEnabled = !!document.getElementById('banner-wrapper')
+// TypeScript类型定义
+interface SwupVisit {
+	to: { url: string };
+}
 
-function setClickOutsideToClose(panel: string, ignores: string[]) {
-	document.addEventListener("click", event => {
+interface SwupHookEvent {
+	visit: SwupVisit;
+}
+
+// 全局状态变量
+let loadingBarTimeout: NodeJS.Timeout | null = null;
+let loadingBarShownAt: number | null = null;
+const MAX_LOADING_TIME = 10000; // 10秒超时
+
+const bannerEnabled = !!document.getElementById('banner-wrapper');
+
+function setClickOutsideToClose(panel: string, ignores: string[]): void {
+	document.addEventListener("click", (event: MouseEvent) => {
 		let panelDom = document.getElementById(panel);
-		let tDom = event.target;
+		let tDom = event.target as Node;
 		if (!(tDom instanceof Node)) return;		// Ensure the event target is an HTML Node
 		for (let ig of ignores) {
-			let ie = document.getElementById(ig)
+			let ie = document.getElementById(ig);
 			if (ie == tDom || (ie?.contains(tDom))) {
 				return;
 			}
@@ -313,36 +331,118 @@ function setClickOutsideToClose(panel: string, ignores: string[]) {
 		panelDom!.classList.add("float-panel-closed");
 	});
 }
-setClickOutsideToClose("display-setting", ["display-setting", "display-settings-switch"])
-setClickOutsideToClose("nav-menu-panel", ["nav-menu-panel", "nav-menu-switch"])
-setClickOutsideToClose("search-panel", ["search-panel", "search-bar", "search-switch"])
+setClickOutsideToClose("display-setting", ["display-setting", "display-settings-switch"]);
+setClickOutsideToClose("nav-menu-panel", ["nav-menu-panel", "nav-menu-switch"]);
+setClickOutsideToClose("search-panel", ["search-panel", "search-bar", "search-switch"]);
 
-function showLoadingOverlay() {
-	const loadingOverlay = document.getElementById('loading-overlay');
-	if (loadingOverlay) {
-		loadingOverlay.classList.remove('hide', 'opacity-0');
-		loadingOverlay.classList.add('show', 'opacity-100');
+/**
+ * 检查链接是否是锚点链接（页面内跳转）
+ */
+function isAnchorLink(href: string | null): boolean {
+	if (!href) return false;
+	// 检查是否是#开头或包含#但不改变页面路径
+	return href.startsWith('#') || (href.includes('#') && !href.includes('://') && !href.startsWith('/'));
+}
+
+/**
+ * 检查链接是否指向当前页面
+ */
+function isSamePageLink(href: string): boolean {
+	try {
+		const currentUrl = new URL(window.location.href);
+		const targetUrl = new URL(href, window.location.origin);
+		
+		// 比较协议、主机名、路径名
+		return currentUrl.protocol === targetUrl.protocol &&
+			   currentUrl.hostname === targetUrl.hostname &&
+			   currentUrl.pathname === targetUrl.pathname &&
+			   // 如果是锚点链接，不算相同页面（应该被isAnchorLink处理）
+			   !targetUrl.hash;
+	} catch (e) {
+		// 如果URL解析失败，可能是相对路径
+		return false;
 	}
 }
 
-function hideLoadingOverlay() {
-	const loadingOverlay = document.getElementById('loading-overlay');
-	if (loadingOverlay) {
-		loadingOverlay.classList.remove('show', 'opacity-100');
-		loadingOverlay.classList.add('hide', 'opacity-0');
+/**
+ * 显示加载条
+ */
+function showLoadingBar(): void {
+	const loadingBar = document.getElementById('loading-bar');
+	if (loadingBar) {
+		loadingBar.classList.remove('hide');
+		loadingBar.classList.add('show');
+		loadingBarShownAt = Date.now();
+		
+		// 设置10秒后强制隐藏的安全机制
+		if (loadingBarTimeout) {
+			clearTimeout(loadingBarTimeout);
+		}
+		loadingBarTimeout = setTimeout(() => {
+			hideLoadingBar();
+		}, MAX_LOADING_TIME);
 	}
 }
 
-function loadTheme() {
-	const theme = getStoredTheme()
-	setTheme(theme)
+/**
+ * 隐藏加载条
+ */
+function hideLoadingBar(): void {
+	const loadingBar = document.getElementById('loading-bar');
+	if (loadingBar) {
+		loadingBar.classList.remove('show');
+		loadingBar.classList.add('hide');
+		if (loadingBarTimeout) {
+			clearTimeout(loadingBarTimeout);
+			loadingBarTimeout = null;
+		}
+		loadingBarShownAt = null;
+	}
 }
 
-function loadHue() {
-	setHue(getHue())
+/**
+ * 全局点击事件监听，智能检测链接类型
+ */
+function setupGlobalLinkListener(): void {
+	document.addEventListener('click', (event: MouseEvent) => {
+		const target = (event.target as HTMLElement).closest('a');
+		if (!target || !target.href) return;
+		
+		const href = target.getAttribute('href');
+		
+		// 如果是锚点链接，不显示加载条
+		if (isAnchorLink(href)) {
+			return;
+		}
+		
+		// 如果是当前页面链接（无hash），不显示加载条
+		if (isSamePageLink(target.href)) {
+			return;
+		}
+		
+		// 检查是否是外部链接或特殊协议
+		if (target.target === '_blank' || 
+			target.href.startsWith('javascript:') || 
+			target.href.startsWith('mailto:') ||
+			target.href.startsWith('tel:')) {
+			return;
+		}
+		
+		// 如果是Swup管理的链接，让Swup处理加载条
+		// 这里不直接显示加载条，由Swup事件处理
+	});
 }
 
-function initCustomScrollbar() {
+function loadTheme(): void {
+	const theme = getStoredTheme();
+	setTheme(theme);
+}
+
+function loadHue(): void {
+	setHue(getHue());
+}
+
+function initCustomScrollbar(): void {
 	const bodyElement = document.querySelector('body');
 	if (!bodyElement) return;
 	OverlayScrollbars(
@@ -410,7 +510,7 @@ function initCustomScrollbar() {
 //   const event = new Event("loadComment");
 //   document.dispatchEvent(event);
 // }
-function showBanner() {
+function showBanner(): void {
 	if (!siteConfig.banner.enable) return;
 
 	const banner = document.getElementById('banner');
@@ -422,19 +522,21 @@ function showBanner() {
 	banner.classList.remove('opacity-0', 'scale-105');
 }
 
-function init() {
+function init(): void {
 	// disableAnimation()()		// TODO
 	loadTheme();
 	loadHue();
 	initCustomScrollbar();
 	// initCommentComponent();
 	showBanner();
+	// 设置全局链接监听
+	setupGlobalLinkListener();
 }
 
 /* Load settings when entering the site */
 init();
 
-const setup = () => {
+const setup = (): void => {
 	// TODO: temp solution to change the height of the banner
 /*
 	window.swup.hooks.on('animation:out:start', () => {
@@ -447,33 +549,49 @@ const setup = () => {
 		}
 	})
 */
-	window.swup.hooks.on('link:click', () => {
+	window.swup.hooks.on('link:click', (visit: SwupVisit) => {
+		// 检查链接类型
+		const targetUrl = visit.to.url;
+		
+		// 如果是锚点链接，不显示加载条
+		if (targetUrl.includes('#') && targetUrl.split('#')[0] === window.location.pathname) {
+			return;
+		}
+		
+		// 如果是当前页面链接（无hash变化），不显示加载条
+		const currentUrl = window.location.pathname + window.location.search;
+		const targetPath = new URL(targetUrl, window.location.origin).pathname + 
+						   new URL(targetUrl, window.location.origin).search;
+		
+		if (targetPath === currentUrl && !targetUrl.includes('#')) {
+			return;
+		}
+		
 		// Remove the delay for the first time page load
-		document.documentElement.style.setProperty('--content-delay', '0ms')
-		// 显示加载遮罩
-		showLoadingOverlay();
+		document.documentElement.style.setProperty('--content-delay', '0ms');
+		// 显示加载条
+		showLoadingBar();
 
 		// prevent elements from overlapping the navbar
 		if (!bannerEnabled) {
-			return
+			return;
 		}
-		let threshold = window.innerHeight * (BANNER_HEIGHT / 100) - 72 - 16
-		let navbar = document.getElementById('navbar-wrapper')
+		let threshold = window.innerHeight * (BANNER_HEIGHT / 100) - 72 - 16;
+		let navbar = document.getElementById('navbar-wrapper');
 		if (!navbar || !document.body.classList.contains('lg:is-home')) {
-			return
+			return;
 		}
 		if (document.body.scrollTop >= threshold || document.documentElement.scrollTop >= threshold) {
-			navbar.classList.add('navbar-hidden')
+			navbar.classList.add('navbar-hidden');
 		}
-	})
+	});
 	window.swup.hooks.on("content:replace", () => {
 		initCustomScrollbar();
 		// initCommentComponent(); // 添加代码调用
 	});
-	window.swup.hooks.on('visit:start', (visit: {to: {url: string}}) => {
-		
+	window.swup.hooks.on('visit:start', (visit: SwupVisit) => {
 		// change banner height immediately when a link is clicked
-		const bodyElement = document.querySelector('body')
+		const bodyElement = document.querySelector('body');
 		if (pathsEqual(visit.to.url, url('/'))) {
 			bodyElement!.classList.add('lg:is-home');
 		} else {
@@ -481,97 +599,103 @@ const setup = () => {
 		}
 
 		// increase the page height during page transition to prevent the scrolling animation from jumping
-		const heightExtend = document.getElementById('page-height-extend')
+		const heightExtend = document.getElementById('page-height-extend');
 		if (heightExtend) {
-			heightExtend.classList.remove('hidden')
+			heightExtend.classList.remove('hidden');
 		}
 
 		// Hide the TOC while scrolling back to top
 		let toc = document.getElementById('toc-wrapper');
 		if (toc) {
-			toc.classList.add('toc-not-ready')
+			toc.classList.add('toc-not-ready');
 		}
 	});
 	window.swup.hooks.on('page:view', () => {
-		// 页面显示时隐藏加载遮罩
-		setTimeout(hideLoadingOverlay, 100);
+		// 页面显示时隐藏加载条
+		setTimeout(hideLoadingBar, 100);
 		// hide the temp high element when the transition is done
-		const heightExtend = document.getElementById('page-height-extend')
+		const heightExtend = document.getElementById('page-height-extend');
 		if (heightExtend) {
-			heightExtend.classList.remove('hidden')
+			heightExtend.classList.remove('hidden');
 		}
 	});
-	window.swup.hooks.on('visit:end', (_visit: {to: {url: string}}) => {
-		// 确保加载遮罩最终隐藏
-		setTimeout(hideLoadingOverlay, 500);
+	window.swup.hooks.on('visit:end', (_visit: SwupVisit) => {
+		// 确保加载条最终隐藏
+		setTimeout(hideLoadingBar, 500);
 		
 		setTimeout(() => {
-			const heightExtend = document.getElementById('page-height-extend')
+			const heightExtend = document.getElementById('page-height-extend');
 			if (heightExtend) {
-				heightExtend.classList.add('hidden')
+				heightExtend.classList.add('hidden');
 			}
 
             // Just make the transition looks better
             const toc = document.getElementById('toc-wrapper');
             if (toc) {
-                toc.classList.remove('toc-not-ready')
+                toc.classList.remove('toc-not-ready');
             }
-        }, 200)
+        }, 200);
 	});
-}
+	// 添加页面加载超时检查
+	window.swup.hooks.on('animation:in:start', () => {
+		if (loadingBarShownAt && Date.now() - loadingBarShownAt > MAX_LOADING_TIME) {
+			hideLoadingBar();
+		}
+	});
+};
 if (window?.swup?.hooks) {
-	setup()
+	setup();
 } else {
-	document.addEventListener('swup:enable', setup)
+	document.addEventListener('swup:enable', setup);
 }
 
 let backToTopBtn = document.getElementById('back-to-top-btn');
 let toc = document.getElementById('toc-wrapper');
-let navbar = document.getElementById('navbar-wrapper')
-function scrollFunction() {
-	let bannerHeight = window.innerHeight * (BANNER_HEIGHT / 100)
+let navbar = document.getElementById('navbar-wrapper');
+function scrollFunction(): void {
+	let bannerHeight = window.innerHeight * (BANNER_HEIGHT / 100);
 
 	if (backToTopBtn) {
 		if (document.body.scrollTop > bannerHeight || document.documentElement.scrollTop > bannerHeight) {
-			backToTopBtn.classList.remove('hide')
+			backToTopBtn.classList.remove('hide');
 		} else {
-			backToTopBtn.classList.add('hide')
+			backToTopBtn.classList.add('hide');
 		}
 	}
 
 	if (bannerEnabled && toc) {
 		if (document.body.scrollTop > bannerHeight || document.documentElement.scrollTop > bannerHeight) {
-			toc.classList.remove('toc-hide')
+			toc.classList.remove('toc-hide');
 		} else {
-			toc.classList.add('toc-hide')
+			toc.classList.add('toc-hide');
 		}
 	}
 
-	if (!bannerEnabled) return
+	if (!bannerEnabled) return;
 	if (navbar) {
-		const NAVBAR_HEIGHT = 72
-		const MAIN_PANEL_EXCESS_HEIGHT = MAIN_PANEL_OVERLAPS_BANNER_HEIGHT * 16			// The height the main panel overlaps the banner
+		const NAVBAR_HEIGHT = 72;
+		const MAIN_PANEL_EXCESS_HEIGHT = MAIN_PANEL_OVERLAPS_BANNER_HEIGHT * 16;			// The height the main panel overlaps the banner
 
-		let bannerHeight = BANNER_HEIGHT
+		let bannerHeight = BANNER_HEIGHT;
 		if (document.body.classList.contains('lg:is-home') && window.innerWidth >= 1024) {
-			bannerHeight = BANNER_HEIGHT_HOME
+			bannerHeight = BANNER_HEIGHT_HOME;
 		}
-		let threshold = window.innerHeight * (bannerHeight / 100) - NAVBAR_HEIGHT - MAIN_PANEL_EXCESS_HEIGHT - 16
+		let threshold = window.innerHeight * (bannerHeight / 100) - NAVBAR_HEIGHT - MAIN_PANEL_EXCESS_HEIGHT - 16;
 		if (document.body.scrollTop >= threshold || document.documentElement.scrollTop >= threshold) {
-			navbar.classList.add('navbar-hidden')
+			navbar.classList.add('navbar-hidden');
 		} else {
-			navbar.classList.remove('navbar-hidden')
+			navbar.classList.remove('navbar-hidden');
 		}
 	}
 }
-window.onscroll = scrollFunction
+window.onscroll = scrollFunction;
 
-window.onresize = () => {
+window.onresize = (): void => {
 	// calculate the --banner-height-extend, which needs to be a multiple of 4 to avoid blurry text
 	let offset = Math.floor(window.innerHeight * (BANNER_HEIGHT_EXTEND / 100));
 	offset = offset - offset % 4;
 	document.documentElement.style.setProperty('--banner-height-extend', `${offset}px`);
-}
+};
 
 </script>
 
@@ -580,10 +704,10 @@ import PhotoSwipeLightbox from "photoswipe/lightbox"
 import "photoswipe/style.css"
 
 
-let lightbox: PhotoSwipeLightbox
-let pswp = import("photoswipe")
+let lightbox: PhotoSwipeLightbox;
+let pswp = import("photoswipe");
 
-function createPhotoSwipe() {
+function createPhotoSwipe(): void {
 	lightbox = new PhotoSwipeLightbox({
 		gallery: ".custom-md img, #post-cover img",
 		pswpModule: () => pswp,
@@ -614,27 +738,27 @@ function createPhotoSwipe() {
 	lightbox.init()
 }
 
-const setup = () => {
+const setup = (): void => {
 	if (!lightbox) {
-		createPhotoSwipe()
+		createPhotoSwipe();
 	}
 	window.swup.hooks.on("page:view", () => {
-		createPhotoSwipe()
+		createPhotoSwipe();
 	})
 
 	window.swup.hooks.on(
 		"content:replace",
 		() => {
-			lightbox?.destroy?.()
+			lightbox?.destroy?.();
 		},
 		{ before: true },
 	)
 }
 
 if (window.swup) {
-	setup()
+	setup();
 } else {
-	document.addEventListener("swup:enable", setup)
+	document.addEventListener("swup:enable", setup);
 }
 
 </script>
