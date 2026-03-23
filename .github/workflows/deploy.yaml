@@ -16,36 +16,21 @@ jobs:
         with:
           fetch-depth: 0
       
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          bun-version: latest
-      
-      # 👇 新增：缓存 Bun 依赖
-      - name: Cache Bun dependencies
-        uses: actions/cache@v5
-        id: bun-cache
-        with:
-          path: |
-            ~/.bun/install/cache
-            **/node_modules
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
-          restore-keys: |
-            ${{ runner.os }}-bun-
+          node-version: '20'
+          cache: 'npm'
       
       - name: Install dependencies
-        if: steps.bun-cache.outputs.cache-hit != 'true'
-        run: bun install
-      
-      # - name: Install Wrangler CLI
-      #   run: bun i -g wrangler
+        run: npm ci
       
       - name: Build Project
-        run: bun run build
+        run: npm run build
       
       - name: Deploy to Cloudflare Pages
         run: |
-          bunx wrangler pages deploy ./dist \
+          npx wrangler pages deploy ./dist \
             --project-name="${{ secrets.CF_PROJECT_NAME }}" \
             --branch="${GITHUB_REF#refs/heads/}" \
             --commit-hash="${{ github.sha }}" \
