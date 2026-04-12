@@ -30,14 +30,14 @@ jobs:
 
       
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install && pnpm i wrangler
       
       - name: Build Project
         run: pnpm run build
       
       - name: Deploy to Cloudflare Pages
         run: |
-          npx wrangler pages deploy ./dist \
+          pnpm exec wrangler pages deploy ./dist \
             --project-name="${{ secrets.CF_PROJECT_NAME }}" \
             --branch="${GITHUB_REF#refs/heads/}" \
             --commit-hash="${{ github.sha }}" \
