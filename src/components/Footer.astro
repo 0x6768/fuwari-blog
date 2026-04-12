@@ -14,7 +14,7 @@ const currentYear = new Date().getFullYear();
 <div class="bg-[oklch(95%_0.01_var(--hue))] dark:bg-[oklch(15%_0.01_var(--hue))] rounded-xl p-6 md:p-8 flex flex-col items-center gap-4">
   <div class="text-sm text-center text-gray-600 dark:text-gray-300 space-y-3">
     <div>
-      &copy; <span id="copyright-year">2023-{currentYear}</span> {profileConfig.name}（<Icon name="mdi:source-branch" class="inline-block align-middle -translate-y-[1px]" /><a class="transition link font-medium hover:opacity-80" href=`https://github.com/0x6768/fuwari-blog/commit/${GitCommitHash}`>{GitCommitHash}</a>）All Rights Reserved.
+      &copy; <span id="copyright-year">2023-{currentYear}</span> {profileConfig.name}（<span class="inline-block align-middle -translate-y-[1px]"><Icon name="mdi:source-branch"/></span><a class="transition link font-medium hover:opacity-80" href=`https://github.com/0x6768/fuwari-blog/commit/${GitCommitHash}`>{GitCommitHash}</a>）All Rights Reserved.
     </div>
     
     <div class="flex items-center justify-center gap-4">
@@ -50,7 +50,7 @@ const currentYear = new Date().getFullYear();
       <span class="text-gray-400">•</span>
       <a href="https://github.com/features/actions" class="transition link text-[var(--primary)] font-medium hover:opacity-80">Built by GitHub Actions</a>
       <span class="text-gray-400">•</span>
-      <a href="https://netlify.com/" class="transition link text-[var(--primary)] font-medium hover:opacity-80">Hosting by Netlify</a>
+      <a href="https://pages.cloudflare.com/" class="transition link text-[var(--primary)] font-medium hover:opacity-80">Hosting by Cloudflare Pages</a>
     </div>
 
 <div id="custom" class="mt-6">

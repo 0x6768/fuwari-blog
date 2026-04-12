@@ -1,3 +1,39 @@
+﻿commit f0e175cf5e13e920470de31c491ae26e3fa0b903
+Author: 0x6768 <mystery128@qq.com>
+Date:   Mon Mar 23 20:23:08 2026 +0800
+
+    feat: 添加页面加载条并优化链接跳转处理
+
+commit fd4c828c874a0db2f88361016d88140555568e78
+Author: 0x6768 <mystery128@qq.com>
+Date:   Mon Mar 23 20:00:40 2026 +0800
+
+    feat(layout): 添加Swup页面切换时的加载动画
+
+commit 57f5ed5146700367399b04e44541eee849c8b7d3
+Author: 0x6768 <mystery128@qq.com>
+Date:   Mon Mar 23 19:38:40 2026 +0800
+
+    fix: ci bud err
+
+commit 62753448fd7934a1a31781b742701eba2336c5ff
+Author: 0x6768 <mystery128@qq.com>
+Date:   Mon Mar 23 19:20:42 2026 +0800
+
+    fix: ci err lockfile nf
+
+commit a5123a79ddf7567fab5ec91364fd7b895b5b3fa5
+Author: 0x6768 <mystery128@qq.com>
+Date:   Mon Mar 23 19:13:00 2026 +0800
+
+    chore: use npm instead of bun in CI
+
+commit aba44c1ab1f7659335c382c575cb027633fdaa53
+Author: 0x6768 <mystery128@qq.com>
+Date:   Mon Mar 23 19:06:17 2026 +0800
+
+    chore: 优化布局组件、更新友链与样式，新增静态页面及文档
+
 commit 06acee7cf4523d84ff216d788a144a1cf6fa1acc
 Author: 0x6768 <mystery128@qq.com>
 Date:   Fri Mar 13 22:40:18 2026 +0800
