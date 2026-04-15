@@ -14,6 +14,7 @@ export function getDefaultHue(): number {
 }
 
 export function getHue(): number {
+	// 直接锁死，让他不读取localStorage从配置文件中读取的值
 	const stored = localStorage.getItem("hue");
 	return stored ? Number.parseInt(stored) : getDefaultHue();
 }

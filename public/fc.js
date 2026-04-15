@@ -1,2 +1,2 @@
-localStorage.setItem("hue", 170);
+localStorage.setItem("hue", 240);
 localStorage.removeItem("immersiveTranslatePerformanceData");
