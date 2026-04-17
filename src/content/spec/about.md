@@ -4,6 +4,7 @@
 ## 技术架构
 - **静态站点生成器**: [Fuwari](https://github.com/saicaca/fuwari)  
   ↳ 轻量级 Markdown 优先的 SSG，专注高效内容创作与极简体验
+  ::github{repo="saicaca/fuwari"}
 - **托管服务**: Cloudflare Pages  
   ↳ 全球边缘网络加速.
 - **构建服务**: GitHub Actions  
@@ -12,8 +13,6 @@
 - **内容协议**: [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)  
   ↳ 知识共享 版权归属-非商业性使用-相同方式共享 4.0 国际 公共许可证
 
-### 构建状态
-[![Deploy to Netlify](https://github.com/0x6768/fuwari-blog/actions/workflows/deploy.yaml/badge.svg)](https://github.com/0x6768/fuwari-blog/actions/workflows/deploy.yaml)
 
 ## 内容声明
 📌 **所有文章均为原创**，采用以下共享规则：
@@ -33,6 +32,11 @@
 
 ---
 
-> 💡 **温馨提示**：  
-> 1. 商业合作请联系邮箱 xxyang233@foxmail.com  
-> 2. 入群请备注来源（如"博客读者"）
+# 本站使用的Fuwari修改版
+
+::github{repo="0x6768/fuwari-blog"}
+
+数学公式
+$$
+E=mc^2
+$$
