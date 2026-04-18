@@ -7,6 +7,8 @@
 
 一个基于 Astro 构建的现代化个人博客主题，专注于技术分享与实践。
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/0x6768/fuwari-blog)
+
 ## ✨ 特性
 
 - 🚀 基于 Astro 4.0+ 构建，性能卓越
