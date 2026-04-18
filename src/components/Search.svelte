@@ -3,6 +3,7 @@ import Icon from "@iconify/svelte";
 import { url } from "@utils/url-utils.ts";
 import { onMount } from "svelte";
 
+// 明确的接口定义
 interface SearchResult {
 	url: string;
 	meta: {
@@ -12,11 +13,19 @@ interface SearchResult {
 	urlPath?: string;
 }
 
+// 搜索索引数据接口
+interface SearchIndexItem {
+	slug: string;
+	title: string;
+	description: string;
+	content: string;
+}
+
 let keywordDesktop = "";
 let keywordMobile = "";
 let result: SearchResult[] = [];
 let isSearching = false;
-let posts: any[] = [];
+let searchIndex: SearchIndexItem[] = [];
 
 const togglePanel = () => {
 	const panel = document.getElementById("search-panel");
@@ -41,7 +50,7 @@ const highlightText = (text: string, keyword: string): string => {
 };
 
 const search = async (keyword: string, isDesktop: boolean): Promise<void> => {
-	if (!keyword) {
+	if (!keyword || searchIndex.length === 0) {
 		setPanelVisibility(false, isDesktop);
 		result = [];
 		return;
@@ -50,43 +59,56 @@ const search = async (keyword: string, isDesktop: boolean): Promise<void> => {
 	isSearching = true;
 
 	try {
-		const searchResults = posts
-			.filter((post) => {
-				const keywordLower = keyword.toLowerCase();
-				const searchText =
-					`${post.title} ${post.description} ${post.content}`.toLowerCase();
-				const urlPath = `/posts/${post.link}`;
-
-				// 支持内容搜索和URL后缀搜索
-				return (
-					searchText.includes(keywordLower) ||
-					urlPath.toLowerCase().includes(keywordLower) ||
-					post.link.toLowerCase().includes(keywordLower)
-				);
+		const keywordLower = keyword.toLowerCase();
+		
+		const searchResults = searchIndex
+			.filter((item) => {
+				// 搜索标题、描述、内容和slug
+				const searchText = `${item.title} ${item.description} ${item.content} ${item.slug}`.toLowerCase();
+				return searchText.includes(keywordLower);
 			})
-			.map((post) => {
-				const contentLower = post.content.toLowerCase();
-				const keywordLower = keyword.toLowerCase();
-				const contentIndex = contentLower.indexOf(keywordLower);
-
+			.map((item) => {
+				const contentLower = item.content.toLowerCase();
+				const titleLower = item.title.toLowerCase();
+				const descriptionLower = item.description.toLowerCase();
+				
+				// 优先级：标题 > 描述 > 内容
 				let excerpt = "";
-				if (contentIndex !== -1) {
-					const start = Math.max(0, contentIndex - 50);
-					const end = Math.min(post.content.length, contentIndex + 100);
-					excerpt = post.content.substring(start, end);
-					if (start > 0) excerpt = "..." + excerpt;
-					if (end < post.content.length) excerpt = excerpt + "...";
+				let matchIndex = -1;
+				
+				if (titleLower.includes(keywordLower)) {
+					// 标题匹配
+					excerpt = item.description || `${item.content.substring(0, 150)}...`;
+				} else if (descriptionLower.includes(keywordLower)) {
+					// 描述匹配
+					matchIndex = descriptionLower.indexOf(keywordLower);
+					const start = Math.max(0, matchIndex - 30);
+					const end = Math.min(item.description.length, matchIndex + 100);
+					excerpt = item.description.substring(start, end);
+					if (start > 0) excerpt = `...${excerpt}`;
+					if (end < item.description.length) excerpt = `${excerpt}...`;
 				} else {
-					excerpt = post.description || post.content.substring(0, 150) + "...";
+					// 内容匹配
+					matchIndex = contentLower.indexOf(keywordLower);
+					if (matchIndex !== -1) {
+						const start = Math.max(0, matchIndex - 50);
+						const end = Math.min(item.content.length, matchIndex + 100);
+						excerpt = item.content.substring(start, end);
+						if (start > 0) excerpt = `...${excerpt}`;
+						if (end < item.content.length) excerpt = `${excerpt}...`;
+					} else {
+						// 没找到，用描述或内容开头
+						excerpt = item.description || `${item.content.substring(0, 150)}...`;
+					}
 				}
-
+				
 				return {
-					url: url(`/posts/${post.link}/`),
+					url: url(`/posts/${item.slug}/`),
 					meta: {
-						title: post.title,
+						title: item.title,
 					},
 					excerpt: highlightText(excerpt, keyword),
-					urlPath: `/posts/${post.link}`,
+					urlPath: `/posts/${item.slug}`,
 				};
 			});
 
@@ -103,101 +125,79 @@ const search = async (keyword: string, isDesktop: boolean): Promise<void> => {
 
 onMount(async () => {
 	try {
-		const response = await fetch("/rss.xml");
-		const text = await response.text();
-		const parser = new DOMParser();
-		const xml = parser.parseFromString(text, "text/xml");
-		const items = xml.querySelectorAll("item");
-
-		posts = Array.from(items).map((item) => {
-			// 尝试多种方式获取content:encoded内容
-			let content = "";
-			const contentEncoded =
-				item.getElementsByTagNameNS("*", "encoded")[0]?.textContent ||
-				item.querySelector("*|encoded")?.textContent ||
-				"";
-
-			if (contentEncoded) {
-				content = contentEncoded.replace(/<[^>]*>/g, "");
-			}
-
-			return {
-				title: item.querySelector("title")?.textContent || "",
-				description: item.querySelector("description")?.textContent || "",
-				content: content,
-				link:
-					item
-						.querySelector("link")
-						?.textContent?.replace(/.*\/posts\/(.*?)\//, "$1") || "",
-			};
-		});
+		const response = await fetch("/search.json");
+		if (!response.ok) {
+			throw new Error(`Failed to fetch search index: ${response.status}`);
+		}
+		searchIndex = await response.json() as SearchIndexItem[];
 	} catch (error) {
-		console.error("Error fetching RSS:", error);
+		console.error("Error loading search index:", error);
+		// 可以在这里添加降级方案，比如尝试加载RSS
 	}
 });
 
 $: search(keywordDesktop, true);
 $: search(keywordMobile, false);
 </script>
-	
-	<!-- search bar for desktop view -->
-	<div id="search-bar" class="hidden lg:flex transition-all items-center h-11 mr-2 rounded-lg
-		  bg-black/[0.04] hover:bg-black/[0.06] focus-within:bg-black/[0.06]
-		  dark:bg-white/5 dark:hover:bg-white/10 dark:focus-within:bg-white/10
-	">
+
+<!-- search bar for desktop view -->
+<div id="search-bar" class="hidden lg:flex transition-all items-center h-11 mr-2 rounded-lg
+	  bg-black/[0.04] hover:bg-black/[0.06] focus-within:bg-black/[0.06]
+	  dark:bg-white/5 dark:hover:bg-white/10 dark:focus-within:bg-white/10
+">
+	<Icon icon="mdi:search" class="absolute text-[1.25rem] pointer-events-none ml-3 transition my-auto text-black/30 dark:text-white/30"></Icon>
+	<input placeholder="搜索" bind:value={keywordDesktop} on:focus={() => search(keywordDesktop, true)}
+		   class="transition-all pl-10 text-sm bg-transparent outline-0
+		 h-full w-40 active:w-60 focus:w-60 text-black/50 dark:text-white/50"
+	>
+</div>
+
+<!-- toggle btn for phone/tablet view -->
+<button on:click={togglePanel} aria-label="Search Panel" id="search-switch"
+		class="btn-plain scale-animation lg:!hidden rounded-lg w-11 h-11 active:scale-90">
+	<Icon icon="mdi:search" class="text-[1.25rem]"></Icon>
+</button>
+
+<!-- search panel -->
+<div id="search-panel" class="float-panel float-panel-closed search-panel absolute md:w-[30rem]
+top-20 left-4 md:left-[unset] right-4 shadow-2xl rounded-2xl p-2">
+
+	<!-- search bar inside panel for phone/tablet -->
+	<div id="search-bar-inside" class="flex relative lg:hidden transition-all items-center h-11 rounded-xl
+	  bg-black/[0.04] hover:bg-black/[0.06] focus-within:bg-black/[0.06]
+	  dark:bg-white/5 dark:hover:bg-white/10 dark:focus-within:bg-white/10
+  ">
 		<Icon icon="mdi:search" class="absolute text-[1.25rem] pointer-events-none ml-3 transition my-auto text-black/30 dark:text-white/30"></Icon>
-		<input placeholder="搜索" bind:value={keywordDesktop} on:focus={() => search(keywordDesktop, true)}
-			   class="transition-all pl-10 text-sm bg-transparent outline-0
-			 h-full w-40 active:w-60 focus:w-60 text-black/50 dark:text-white/50"
+		<input placeholder="Search" bind:value={keywordMobile}
+			   class="pl-10 absolute inset-0 text-sm bg-transparent outline-0
+			   focus:w-60 text-black/50 dark:text-white/50"
 		>
 	</div>
-	
-	<!-- toggle btn for phone/tablet view -->
-	<button on:click={togglePanel} aria-label="Search Panel" id="search-switch"
-			class="btn-plain scale-animation lg:!hidden rounded-lg w-11 h-11 active:scale-90">
-		<Icon icon="mdi:search" class="text-[1.25rem]"></Icon>
-	</button>
-	
-	<!-- search panel -->
-	<div id="search-panel" class="float-panel float-panel-closed search-panel absolute md:w-[30rem]
-	top-20 left-4 md:left-[unset] right-4 shadow-2xl rounded-2xl p-2">
-	
-		<!-- search bar inside panel for phone/tablet -->
-		<div id="search-bar-inside" class="flex relative lg:hidden transition-all items-center h-11 rounded-xl
-		  bg-black/[0.04] hover:bg-black/[0.06] focus-within:bg-black/[0.06]
-		  dark:bg-white/5 dark:hover:bg-white/10 dark:focus-within:bg-white/10
-	  ">
-			<Icon icon="mdi:search" class="absolute text-[1.25rem] pointer-events-none ml-3 transition my-auto text-black/30 dark:text-white/30"></Icon>
-			<input placeholder="Search" bind:value={keywordMobile}
-				   class="pl-10 absolute inset-0 text-sm bg-transparent outline-0
-				   focus:w-60 text-black/50 dark:text-white/50"
-			>
-		</div>
-	
-		<!-- search results -->
-		{#each result as item}
-			<a href={item.url}
-			   class="transition first-of-type:mt-2 lg:first-of-type:mt-0 group block
-		   rounded-xl text-lg px-3 py-2 hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)]">
-				<div class="transition text-90 inline-flex font-bold group-hover:text-[var(--primary)]">
-					{item.meta.title}<Icon icon="fa6-solid:chevron-right" class="transition text-[0.75rem] translate-x-1 my-auto text-[var(--primary)]"></Icon>
-				</div>
-				<div class="transition text-xs text-white mb-1 font-mono">
-					{item.urlPath}
-				</div>
-				<div class="transition text-sm text-50">
-					{@html item.excerpt}
-				</div>
-			</a>
-		{/each}
-	</div>
-	
-	<style>
-	  input:focus {
-		outline: 0;
-	  }
-	  .search-panel {
-		max-height: calc(100vh - 100px);
-		overflow-y: auto;
-	  }
-	</style>
+
+	<!-- search results -->
+	{#each result as item}
+		<a href={item.url}
+		   class="transition first-of-type:mt-2 lg:first-of-type:mt-0 group block
+	   rounded-xl text-lg px-3 py-2 hover:bg-[var(--btn-plain-bg-hover)] active:bg-[var(--btn-plain-bg-active)]">
+			<div class="transition text-90 inline-flex font-bold group-hover:text-[var(--primary)]">
+				{item.meta.title}<Icon icon="fa6-solid:chevron-right" class="transition text-[0.75rem] translate-x-1 my-auto text-[var(--primary)]"></Icon>
+			</div>
+			<div class="transition text-xs text-white mb-1 font-mono">
+				{item.urlPath}
+			</div>
+			<div class="transition text-sm text-50">
+				{@html item.excerpt}
+			</div>
+		</a>
+	{/each}
+</div>
+
+<style>
+  input:focus {
+	outline: 0;
+  }
+  .search-panel {
+	max-height: calc(100vh - 100px);
+	overflow-y: auto;
+  }
+</style>

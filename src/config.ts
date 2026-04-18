@@ -93,6 +93,7 @@ export const expressiveCodeConfig: ExpressiveCodeConfig = {
 };
 
 export const extendedConfig: ExtendedConfig = {
+	"repo":"0x6768/fuwari-blog",
 	twikoo: {
 		envId: "https://twikoo.7003410.xyz",
 	},

@@ -93,6 +93,7 @@ export type ExpressiveCodeConfig = {
 };
 
 export type ExtendedConfig = {
+	repo: string;
 	twikoo: {
 		envId: string;
 	};
