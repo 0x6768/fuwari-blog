@@ -179,6 +179,10 @@ export default defineConfig({
 		],
 	},
 		build: {
+			target: 'es2020',
+			minify: 'esbuild',
+			cssMinify: 'esbuild',
+
 			rollupOptions: {
 				onwarn(warning, warn) {
 					if (
@@ -189,6 +193,12 @@ export default defineConfig({
 					}
 					warn(warning);
 				},
+			},
+			esbuildOptions: {
+				target: 'esnext',
+				supported: { 
+					'top-level-await': true 
+				}
 			},
 		},
 	},
