@@ -24,7 +24,7 @@ jobs:
         id: node-modules-cache
         with:
           path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('bun.lockb') }}
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('bun.lock') }}
           restore-keys: |
             ${{ runner.os }}-node-modules-
       

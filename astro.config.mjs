@@ -13,7 +13,7 @@ import rehypeComponents from "rehype-components"; /* Render the custom directive
 import rehypeSlug from "rehype-slug";
 import remarkDirective from "remark-directive"; /* Handle directives */
 import remarkGithubAdmonitionsToDirectives from "remark-github-admonitions-to-directives";
-import remarkMath from "remark-math";
+// import remarkMath from "remark-math";
 import remarkSectionize from "remark-sectionize";
 import { fileURLToPath } from 'url'; 
 import { pluginCustomCopyButton } from "./src/plugins/expressive-code/custom-copy-button.js";
