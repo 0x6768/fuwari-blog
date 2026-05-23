@@ -140,7 +140,7 @@ export const siteConfig: SiteConfig = {
 
   favicon: [
     {
-      src: 'https://q1.qlogo.cn/g?b=qq&nk=2540797494&s=640',
+      src: 'https://images.sy.fj.kg/logo.96adlmmyni.webp',
       theme: 'light',
       sizes: '32x32',
     },

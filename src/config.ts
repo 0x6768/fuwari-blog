@@ -37,7 +37,7 @@ export const siteConfig: SiteConfig = {
 	},
 	favicon: [
 		{
-			src: "https://q1.qlogo.cn/g?b=qq&nk=2540797494&s=640", // Path of the favicon, relative to the /public directory
+			src: "https://images.sy.fj.kg/logo.96adlmmyni.webp", // Path of the favicon, relative to the /public directory
 			theme: "light", // (Optional) Either 'light' or 'dark', set only if you have different favicons for light and dark mode
 			sizes: "32x32", // (Optional) Size of the favicon, set only if you have favicons of different sizes
 		},
@@ -63,7 +63,7 @@ export const navBarConfig: NavBarConfig = {
 };
 
 export const profileConfig: ProfileConfig = {
-	avatar: "https://q1.qlogo.cn/g?b=qq&nk=2540797494&s=640", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
+	avatar: "https://images.sy.fj.kg/logo.96adlmmyni.webp", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 	name: "晓正杨",
 	bio: "让代码更有价值，让学生生活不再枯燥",
 	links: [

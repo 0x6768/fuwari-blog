@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-bs-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔐 OTP在线管理器</title>
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- CryptoJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <!-- OTPAuth 库 -->
+    <script src="https://cdn.jsdelivr.net/npm/otpauth@9.1.3/dist/otpauth.umd.min.js"></script>
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        body {
+            background: #121212;
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+        }
+
+        .otp-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid #0d6efd;
+        }
+
+        .otp-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .otp-code {
+            font-family: 'Courier New', monospace;
+            letter-spacing: 4px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .secret-field {
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .locked-screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .countdown-badge {
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: bold;
+        }
+
+        .brand-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #0d6efd;
+            color: white;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+
+        .progress {
+            height: 4px;
+        }
+
+        .progress-bar {
+            transition: width 1s linear;
+        }
+
+        .empty-state {
+            opacity: 0.7;
+        }
+
+        .empty-state:hover {
+            opacity: 1;
+        }
+
+        .time-left {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .modal-content {
+            background: rgba(33, 37, 41, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-close-white {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+
+        /* 滚动条美化 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 解锁屏幕 -->
+    <div id="lockedScreen" class="locked-screen">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="glass-card p-4 p-md-5 text-center">
+                        <div class="brand-logo" style="background: var(--primary-gradient);">
+                            <i class="bi bi-shield-lock text-white" style="font-size: 1.8rem;"></i>
+                        </div>
+                        <h1 class="h3 mb-3"
+                            style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                            OTP管理器
+                        </h1>
+                        <p class="text-muted mb-4 small">输入主密码访问您的OTP令牌</p>
+
+                        <div class="mb-4">
+                            <input type="password" id="masterPassword" class="form-control form-control-lg"
+                                placeholder="输入主密码" autocomplete="off" autofocus>
+                        </div>
+
+                        <button id="unlockBtn" class="btn btn-primary btn-lg w-100 mb-3">
+                            <i class="bi bi-unlock me-2"></i>解锁
+                        </button>
+
+                        <div class="alert alert-info d-none mb-3" id="firstTimeAlert">
+                            <i class="bi bi-info-circle me-2"></i>首次使用，将创建新的保险库
+                        </div>
+
+                        <div class="alert alert-danger d-none mb-3" id="errorAlert"></div>
+
+                        <div class="mt-4 text-muted small">
+                            <i class="bi bi-shield-check me-1"></i> 数据本地加密存储
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主界面 -->
+    <div id="mainApp" class="container-fluid px-3 px-md-4 py-4 d-none">
+        <!-- 顶部导航 -->
+        <div class="glass-card p-3 mb-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h5 mb-0"
+                        style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                        <i class="bi bi-shield-lock me-2"></i>OTP管理器
+                    </h1>
+                </div>
+                <div class="d-flex align-items-center">
+                    <span class="text-muted me-3 d-none d-md-block" id="currentTime">00:00:00</span>
+                    <button id="addBtn" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#addModal">
+                        <i class="bi bi-plus-circle me-1"></i>添加令牌
+                    </button>
+                    <button id="lockBtn" class="btn btn-outline-secondary">
+                        <i class="bi bi-lock"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- OTP列表 -->
+        <div id="otpList" class="row g-3">
+            <!-- 动态生成OTP卡片 -->
+        </div>
+
+        <!-- 空状态 -->
+        <div id="emptyState" class="text-center py-5 d-none">
+            <div class="glass-card p-5 empty-state">
+                <i class="bi bi-key display-1 text-muted mb-4"></i>
+                <h3 class="h5 mb-3">没有OTP令牌</h3>
+                <p class="text-muted mb-4 small">添加您的第一个OTP令牌开始使用</p>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+                    <i class="bi bi-plus-circle me-2"></i>添加令牌
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加/编辑令牌模态框 -->
+    <div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">添加OTP令牌</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="otpForm">
+                        <input type="hidden" id="editIndex" value="-1">
+
+                        <div class="mb-3">
+                            <label class="form-label mb-2">平台名称</label>
+                            <input type="text" id="otpName" class="form-control"
+                                placeholder="例如：GitHub、Google、Microsoft" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label mb-2">账号</label>
+                            <input type="text" id="otpAccount" class="form-control" placeholder="例如：user@example.com"
+                                required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label mb-2">密钥</label>
+                            <div class="input-group">
+                                <input type="text" id="otpSecret" class="form-control secret-field"
+                                    placeholder="Base32编码密钥" required>
+                                <button type="button" id="generateSecret" class="btn btn-outline-secondary">
+                                    <i class="bi bi-shuffle"></i>
+                                </button>
+                            </div>
+                            <div class="form-text mt-2">从您的2FA应用中获取Base32编码密钥，不包含空格</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" id="saveBtn" class="btn btn-primary">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        class OTPManager {
+            constructor() {
+                this.STORAGE_KEY = 'otp_manager_vault';
+                this.SALT = 'otp_manager_salt_2024';
+                this.isUnlocked = false;
+                this.otpList = [];
+                this.masterPassword = '';
+                this.init();
+            }
+
+            // 派生密钥
+            deriveKey(password) {
+                return CryptoJS.PBKDF2(password, this.SALT, {
+                    keySize: 256 / 32,
+                    iterations: 100000
+                });
+            }
+
+            // 加密数据
+            encrypt(data) {
+                const key = this.deriveKey(this.masterPassword);
+                return CryptoJS.AES.encrypt(
+                    JSON.stringify(data),
+                    key.toString(),
+                    {
+                        mode: CryptoJS.mode.CBC,
+                        padding: CryptoJS.pad.Pkcs7
+                    }
+                ).toString();
+            }
+
+            // 解密数据
+            decrypt(encrypted) {
+                try {
+                    const key = this.deriveKey(this.masterPassword);
+                    const decrypted = CryptoJS.AES.decrypt(encrypted, key.toString(), {
+                        mode: CryptoJS.mode.CBC,
+                        padding: CryptoJS.pad.Pkcs7
+                    });
+                    const text = decrypted.toString(CryptoJS.enc.Utf8);
+                    if (!text) throw new Error('解密失败');
+                    return JSON.parse(text);
+                } catch (error) {
+                    throw new Error('密码错误或数据损坏');
+                }
+            }
+
+            // 生成TOTP
+            generateTOTP(secret) {
+                try {
+                    const totp = new OTPAuth.TOTP({
+                        secret: secret,
+                        digits: 6,
+                        period: 30
+                    });
+                    return totp.generate();
+                } catch (error) {
+                    console.error('生成TOTP失败:', error);
+                    return 'ERROR';
+                }
+            }
+
+            // 获取剩余时间
+            getRemainingTime() {
+                const now = Math.floor(Date.now() / 1000);
+                return 30 - (now % 30);
+            }
+
+            // 生成随机密钥
+            generateRandomSecret() {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+                let secret = '';
+                for (let i = 0; i < 32; i++) {
+                    secret += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return secret;
+            }
+
+            // 初始化
+            init() {
+                this.setupEventListeners();
+                this.startClock();
+
+                // 检查是否有保存的数据
+                const hasData = localStorage.getItem(this.STORAGE_KEY);
+                if (!hasData) {
+                    document.getElementById('firstTimeAlert').classList.remove('d-none');
+                }
+            }
+
+            // 解锁
+            unlock(password) {
+                try {
+                    this.masterPassword = password;
+                    const encrypted = localStorage.getItem(this.STORAGE_KEY);
+
+                    if (encrypted) {
+                        this.otpList = this.decrypt(encrypted);
+                    } else {
+                        this.otpList = [];
+                    }
+
+                    this.isUnlocked = true;
+                    this.showMainApp();
+                    this.renderOTPList();
+                    return true;
+                } catch (error) {
+                    this.showError('密码错误或数据损坏');
+                    return false;
+                }
+            }
+
+            // 锁定
+            lock() {
+                this.isUnlocked = false;
+                this.masterPassword = '';
+                this.otpList = [];
+                this.showLockScreen();
+            }
+
+            // 保存数据
+            save() {
+                if (!this.isUnlocked) return;
+                const encrypted = this.encrypt(this.otpList);
+                localStorage.setItem(this.STORAGE_KEY, encrypted);
+            }
+
+            // 添加/编辑OTP
+            saveOTP(data) {
+                if (!this.isUnlocked) return false;
+
+                const index = parseInt(document.getElementById('editIndex').value);
+                const secret = data.secret.replace(/\s+/g, '').toUpperCase();
+
+                // 验证密钥格式（Base32）
+                if (!/^[A-Z2-7]+=*$/.test(secret)) {
+                    this.showError('密钥格式不正确，请输入有效的Base32编码');
+                    return false;
+                }
+
+                const otpData = {
+                    id: Date.now(),
+                    name: data.name.trim(),
+                    account: data.account.trim(),
+                    secret: secret,
+                    createdAt: new Date().toISOString()
+                };
+
+                if (index >= 0 && index < this.otpList.length) {
+                    this.otpList[index] = otpData;
+                } else {
+                    this.otpList.push(otpData);
+                }
+
+                this.save();
+                this.renderOTPList();
+                return true;
+            }
+
+            // 删除OTP
+            deleteOTP(index) {
+                if (!this.isUnlocked || index < 0 || index >= this.otpList.length) return;
+
+                if (confirm('确定要删除这个OTP令牌吗？')) {
+                    this.otpList.splice(index, 1);
+                    this.save();
+                    this.renderOTPList();
+                }
+            }
+
+            // 显示主界面
+            showMainApp() {
+                document.getElementById('lockedScreen').classList.add('d-none');
+                document.getElementById('mainApp').classList.remove('d-none');
+                document.getElementById('masterPassword').value = '';
+            }
+
+            // 显示锁定界面
+            showLockScreen() {
+                document.getElementById('lockedScreen').classList.remove('d-none');
+                document.getElementById('mainApp').classList.add('d-none');
+                document.getElementById('masterPassword').focus();
+            }
+
+            // 渲染OTP列表
+            renderOTPList() {
+                const container = document.getElementById('otpList');
+                const emptyState = document.getElementById('emptyState');
+
+                if (this.otpList.length === 0) {
+                    container.innerHTML = '';
+                    emptyState.classList.remove('d-none');
+                    return;
+                }
+
+                emptyState.classList.add('d-none');
+                container.innerHTML = '';
+
+                this.otpList.forEach((otp, index) => {
+                    const code = this.generateTOTP(otp.secret);
+                    const timeLeft = this.getRemainingTime();
+                    const percent = (timeLeft / 30) * 100;
+
+                    const col = document.createElement('div');
+                    col.className = 'col-12 col-md-6 col-lg-4 col-xl-3';
+
+                    col.innerHTML = `
+                        <div class="otp-card glass-card p-3 h-100">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <h6 class="mb-1">${otp.name}</h6>
+                                    <small class="text-muted">${otp.account}</small>
+                                </div>
+                                <span class="countdown-badge ${timeLeft > 10 ? 'bg-success' : 'bg-danger'}">
+                                    ${timeLeft}
+                                </span>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="otp-code display-6 text-center mb-2">${code}</div>
+                                <div class="progress mb-1">
+                                    <div class="progress-bar ${timeLeft > 10 ? 'bg-success' : 'bg-warning'}" 
+                                         style="width: ${percent}%"></div>
+                                </div>
+                                <div class="time-left text-end">${timeLeft}秒后更新</div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between">
+                                <button class="btn btn-sm btn-outline-primary copy-otp" data-code="${code}">
+                                    <i class="bi bi-copy me-1"></i>复制
+                                </button>
+                                <div>
+                                    <button class="btn btn-sm btn-outline-secondary edit-otp me-1" data-index="${index}">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger delete-otp" data-index="${index}">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    container.appendChild(col);
+                });
+            }
+
+            // 更新所有倒计时
+            updateAllCountdowns() {
+                const timeLeft = this.getRemainingTime();
+
+                // 更新倒计时数字
+                document.querySelectorAll('.countdown-badge').forEach(badge => {
+                    badge.textContent = timeLeft;
+                    badge.className = `countdown-badge ${timeLeft > 10 ? 'bg-success' : 'bg-danger'}`;
+                });
+
+                // 更新进度条
+                document.querySelectorAll('.progress-bar').forEach(bar => {
+                    const percent = (timeLeft / 30) * 100;
+                    bar.style.width = `${percent}%`;
+                    bar.className = `progress-bar ${timeLeft > 10 ? 'bg-success' : 'bg-warning'}`;
+                });
+
+                // 更新时间文字
+                document.querySelectorAll('.time-left').forEach(el => {
+                    el.textContent = `${timeLeft}秒后更新`;
+                });
+
+                // 每30秒更新一次OTP代码
+                if (timeLeft === 30) {
+                    this.renderOTPList();
+                }
+            }
+
+            // 显示错误
+            showError(message) {
+                const alert = document.getElementById('errorAlert');
+                alert.textContent = message;
+                alert.classList.remove('d-none');
+                setTimeout(() => {
+                    alert.classList.add('d-none');
+                }, 3000);
+            }
+
+            // 显示成功
+            showSuccess(message) {
+                const alert = document.createElement('div');
+                alert.className = 'alert alert-success position-fixed top-0 end-0 m-3';
+                alert.style.zIndex = '9999';
+                alert.innerHTML = `<i class="bi bi-check-circle me-2"></i>${message}`;
+                document.body.appendChild(alert);
+
+                setTimeout(() => {
+                    alert.remove();
+                }, 2000);
+            }
+
+            // 开始时钟
+            startClock() {
+                setInterval(() => {
+                    const now = new Date();
+                    document.getElementById('currentTime').textContent =
+                        now.toLocaleTimeString('zh-CN');
+                    this.updateAllCountdowns();
+                }, 1000);
+            }
+
+            // 设置事件监听
+            setupEventListeners() {
+                // 解锁按钮
+                document.getElementById('unlockBtn').addEventListener('click', () => {
+                    const password = document.getElementById('masterPassword').value;
+                    if (!password) {
+                        this.showError('请输入密码');
+                        return;
+                    }
+                    this.unlock(password);
+                });
+
+                // 回车解锁
+                document.getElementById('masterPassword').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        document.getElementById('unlockBtn').click();
+                    }
+                });
+
+                // 锁定按钮
+                document.getElementById('lockBtn').addEventListener('click', () => this.lock());
+
+                // 保存OTP
+                document.getElementById('saveBtn').addEventListener('click', () => {
+                    const form = document.getElementById('otpForm');
+                    if (!form.checkValidity()) {
+                        form.reportValidity();
+                        return;
+                    }
+
+                    const otpData = {
+                        name: document.getElementById('otpName').value,
+                        account: document.getElementById('otpAccount').value,
+                        secret: document.getElementById('otpSecret').value
+                    };
+
+                    if (this.saveOTP(otpData)) {
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('addModal'));
+                        modal.hide();
+                        form.reset();
+                        document.getElementById('editIndex').value = '-1';
+                        document.getElementById('modalTitle').textContent = '添加OTP令牌';
+                        this.showSuccess('令牌保存成功');
+                    }
+                });
+
+                // 随机生成密钥
+                document.getElementById('generateSecret').addEventListener('click', () => {
+                    document.getElementById('otpSecret').value = this.generateRandomSecret();
+                });
+
+                // 复制OTP
+                document.addEventListener('click', (e) => {
+                    if (e.target.closest('.copy-otp')) {
+                        const code = e.target.closest('.copy-otp').dataset.code;
+                        navigator.clipboard.writeText(code).then(() => {
+                            this.showSuccess('验证码已复制');
+                        });
+                    }
+
+                    // 编辑OTP
+                    if (e.target.closest('.edit-otp')) {
+                        const index = e.target.closest('.edit-otp').dataset.index;
+                        this.editOTP(index);
+                    }
+
+                    // 删除OTP
+                    if (e.target.closest('.delete-otp')) {
+                        const index = e.target.closest('.delete-otp').dataset.index;
+                        this.deleteOTP(index);
+                    }
+                });
+
+                // 模态框关闭时重置表单
+                document.getElementById('addModal').addEventListener('hidden.bs.modal', () => {
+                    document.getElementById('otpForm').reset();
+                    document.getElementById('editIndex').value = '-1';
+                    document.getElementById('modalTitle').textContent = '添加OTP令牌';
+                });
+            }
+
+            // 编辑OTP
+            editOTP(index) {
+                const otp = this.otpList[index];
+                if (!otp) return;
+
+                document.getElementById('editIndex').value = index;
+                document.getElementById('otpName').value = otp.name;
+                document.getElementById('otpAccount').value = otp.account;
+                document.getElementById('otpSecret').value = otp.secret;
+                document.getElementById('modalTitle').textContent = '编辑OTP令牌';
+
+                new bootstrap.Modal(document.getElementById('addModal')).show();
+            }
+        }
+
+        // 初始化应用
+        document.addEventListener('DOMContentLoaded', () => {
+            window.otpManager = new OTPManager();
+        });
+    </script>
+</body>
+
+</html>
