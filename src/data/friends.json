@@ -1,11 +1,5 @@
 [
 	{
-		"name": "Cloudflare",
-		"url": "https://www.cloudflare.com",
-		"icon": "https://qualified-production.s3.amazonaws.com/uploads/3b522ef84c409e4457032e4b4e3b984abbc92522c6f100f4ccc55c0ccfd3062b.png",
-		"description": "Cloudflare永不为奴"
-	},
-	{
 		"name": "THW’s Blog",
 		"url": "https://tianhw.top", 
 		"icon": "https://image.tianhw.top/avatar.webp",
