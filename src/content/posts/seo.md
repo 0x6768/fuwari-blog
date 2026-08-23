@@ -8,6 +8,7 @@ category: '搭建一个Fuwari博客'
 draft: false 
 lang: ''
 order: 0
+aiLevel: "润色"
 ---
 
 ## 一、SEO 配置前的准备工作

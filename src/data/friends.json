@@ -19,8 +19,15 @@
 	},
 	{
 		"name": "Onlyfork Blog",
-		"url": "https://blog.2fo.cc/",
-		"icon": "https://blog.2fo.cc/111.jpg",
+		"url": "https://blog.0y.hk/",
+		"icon": "https://q2.qlogo.cn/headimg_dl?dst_uin=334063894&spec=0&v=3&t=1787471938942",
 		"description": "欢迎光临喵喵喵~"
+	}
+	,
+	{
+		"name": "Hyde Blog",
+		"url": "https://seasir.top/",
+		"icon": "https://seasir.top/assets/avatar.avif",
+		"description": "人心中的成见是一座大山"
 	}
 ]

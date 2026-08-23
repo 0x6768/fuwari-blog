@@ -8,6 +8,7 @@ category: 搭建一个Fuwari博客
 draft: false 
 lang: ''
 order: 0
+aiLevel: "润色"
 ---
 
 在上一篇[《搭建一个 Fuwari 博客（一） 》](/posts/deploy-fuwari/)中，我们成功创建并部署了一个极简的 Fuwari 博客。但静态博客默认不支持评论功能，无法与读者互动。本文将带你为 Fuwari 博客添加一个轻量、免费、无需后端的评论系统 —— Twikoo ，全程只需几步，即可实现评论、点赞、通知等完整功能。

@@ -8,6 +8,7 @@ category: ''
 draft: false 
 lang: ''
 order: -1
+aiLevel: "不使用"
 ---
 
 > 记录一些碎片化的笔记，方便后续查询。

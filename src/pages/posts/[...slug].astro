@@ -17,11 +17,11 @@ import { profileConfig, siteConfig } from "@/config";
 
 const pathname = Astro.url.pathname;
 export async function getStaticPaths() {
-	const blogEntries = await getSortedPosts();
-	return blogEntries.map((entry) => ({
-		params: { slug: entry.slug },
-		props: { entry },
-	}));
+    const blogEntries = await getSortedPosts();
+    return blogEntries.map((entry) => ({
+        params: { slug: entry.slug },
+        props: { entry },
+    }));
 }
 
 const { entry } = Astro.props;
@@ -30,22 +30,27 @@ const { Content, headings } = await entry.render();
 const { remarkPluginFrontmatter } = await entry.render();
 
 const jsonLd = {
-	"@context": "https://schema.org",
-	"@type": "BlogPosting",
-	headline: entry.data.title,
-	description: entry.data.description || entry.data.title,
-	keywords: entry.data.tags,
-	author: {
-		"@type": "Person",
-		name: profileConfig.name,
-		url: Astro.site,
-	},
-	datePublished: formatDateToYYYYMMDD(entry.data.published),
-	inLanguage: entry.data.lang
-		? entry.data.lang.replace("_", "-")
-		: siteConfig.lang.replace("_", "-"),
-	// TODO include cover image here
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: entry.data.title,
+    description: entry.data.description || entry.data.title,
+    keywords: entry.data.tags,
+    author: {
+        "@type": "Person",
+        name: profileConfig.name,
+        url: Astro.site,
+    },
+    datePublished: formatDateToYYYYMMDD(entry.data.published),
+    inLanguage: entry.data.lang
+        ? entry.data.lang.replace("_", "-")
+        : siteConfig.lang.replace("_", "-"),
+    // TODO include cover image here
 };
+
+const aiLevel =
+    entry.data.aiLevel === "润色" || entry.data.aiLevel === "完全"
+        ? entry.data.aiLevel
+        : "不使用";
 ---
 
 <MainGridLayout
@@ -159,6 +164,92 @@ const jsonLd = {
             <div class="card-base p-6 mb-4">
                 <Twikoo path={pathname} />
             </div>
+
+            <!-- AI 参与程度（始终显示，默认：不使用） -->
+            <div
+                class="card-base px-6 py-4 mb-4 rounded-xl border border-[var(--line-divider)] onload-animation"
+            >
+                <div class="flex items-center justify-between gap-4 flex-wrap">
+                    <!-- 左侧标题 -->
+                    <div class="flex items-center gap-2">
+                        <div
+                            class="h-8 w-8 rounded-lg bg-black/5 dark:bg-white/10 flex items-center justify-center"
+                        >
+                            <Icon
+                                name="mdi:robot-outline"
+                                class="text-[var(--primary)] text-[1.25rem]"
+                            />
+                        </div>
+                        <span
+                            class="text-sm font-medium text-black/60 dark:text-white/60"
+                            >AI 参与程度</span
+                        >
+                    </div>
+
+                    <!-- 右侧三个状态 -->
+                    <div class="flex items-center gap-2">
+                        <!-- 润色 -->
+                        <div
+                            class:list={[
+                                "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition",
+                                aiLevel === "润色"
+                                    ? "bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 ring-1 ring-green-200 dark:ring-green-800"
+                                    : "text-black/30 dark:text-white/30",
+                            ]}
+                        >
+                            <Icon name="mdi:pencil-outline" class="text-sm" />
+                            润色
+                        </div>
+
+                        <!-- 完全 -->
+                        <div
+                            class:list={[
+                                "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition",
+                                aiLevel === "完全"
+                                    ? "bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 ring-1 ring-amber-200 dark:ring-amber-800"
+                                    : "text-black/30 dark:text-white/30",
+                            ]}
+                        >
+                            <Icon name="mdi:auto-fix" class="text-sm" />
+                            完全
+                        </div>
+
+                        <!-- 不使用 -->
+                        <div
+                            class:list={[
+                                "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition",
+                                aiLevel === "不使用"
+                                    ? "bg-black/5 dark:bg-white/10 text-black/70 dark:text-white/70 ring-1 ring-black/10 dark:ring-white/10"
+                                    : "text-black/30 dark:text-white/30",
+                            ]}
+                        >
+                            <Icon
+                                name="mdi:account-edit-outline"
+                                class="text-sm"
+                            />
+                            不使用
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 底部细进度条 -->
+                <div
+                    class="mt-3 h-1 rounded-full bg-black/5 dark:bg-white/5 overflow-hidden"
+                >
+                    <div
+                        class:list={[
+                            "h-full rounded-full transition-all duration-500",
+                            aiLevel === "润色"
+                                ? "w-1/3 bg-green-400"
+                                : aiLevel === "完全"
+                                  ? "w-2/3 bg-amber-400"
+                                  : "w-0",
+                        ]}
+                    >
+                    </div>
+                </div>
+            </div>
+
             {
                 licenseConfig.enable && (
                     <License

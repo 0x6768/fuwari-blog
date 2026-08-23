@@ -8,6 +8,7 @@ category: '技术'
 draft: false 
 lang: ''
 order: 0
+aiLevel: "润色"
 ---
 
 有一天，你听说NAT是分不同类型的。想开**Full NAT**就得配**DMZ**。或者你想让路由器拨号，得把光猫改成桥接模式。但要改这些参数，光猫背面那个**useradmin**根本不够用。我们需要一个叫**telecomadmin**的超级管理员账号。

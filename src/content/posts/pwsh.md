@@ -8,6 +8,7 @@ category: ''
 draft: false 
 lang: ''
 order: 0
+aiLevel: "润色"
 ---
 
 # 分享一下我的PowerShell Profile
