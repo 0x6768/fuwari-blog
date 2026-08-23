@@ -1,134 +1,64 @@
 ---
 title: 天邑光猫获取超密不完全指南
 published: 2026-04-18
-description: '和光猫来一起“友好交流”'
+description: ''
 image: ''
-tags: ['中国电信','光猫','超密','不拆机','telecomadmin']
+tags: ['中国电信','光猫','超密']
 category: '技术'
 draft: false 
 lang: ''
 order: 0
 ---
 
-> 深夜，你看着那个白色小盒子，它掌握着你家的网络大权。你只是个普通管理员，而它背后藏着真正的“超级权限”。今天，就让我们来一场“友好”的对话。
+有一天，你听说NAT是分不同类型的。想开**Full NAT**就得配**DMZ**。或者你想让路由器拨号，得把光猫改成桥接模式。但要改这些参数，光猫背面那个**useradmin**根本不够用。我们需要一个叫**telecomadmin**的超级管理员账号。
 
-## 📦 装备检查：知己知彼
+## 准备工作
 
-**目标：** 天邑光猫一只（我手头是TEWA-1100G，博通方案）
-**弹药：**
-- 光猫底部的“身份证”（useradmin账号密码）
-- MAC地址串（就在标签上）
-
----
-
-## 第一步：登录
-
-连接上光猫的WiFi，打开浏览器，访问：
-```
-http://192.168.1.1:8080/login.html
-```
-
-用光猫标签上的useradmin账号登录。这一刻，你只是个“访客”，能看的东西有限——就像去朋友家只能待在客厅，卧室门是锁着的。
+- 普通账号 x1
+- 光猫的Mac地址
+- 一个**至少**为~~单线程~~的脑袋
+- 一台直接连接光猫的电脑
 
 ---
 
-## 第二步：寻找“门缝”
+## 开始折腾吧！
 
-登录后，别急着点这里点那里。在地址栏输入：
-```
-http://192.168.1.1:8080/MD_Device_user.html
-```
+浏览器打开 `http://192.168.1.1:8080/login.html`，用useradmin登录。
 
-**右键 → 查看网页源代码**，这就像透过门缝往里看。
+登录之后，在地址栏打开 `http://192.168.1.1:8080/MD_Device_user.html`。页面加载完，右键→查看网页源代码，找一行长这样的东西：
 
-在一堆代码中，寻找这样的“密语”：
 ```javascript
 set3_sessionKey=' + '956520485368177919'
 ```
 
-把这个数字串**记下来**，这是临时的“通行证”。
+后面那串数字记下来。
 
 ---
 
-## 第三步：打开“Telnet”
-
-
- 构造这样一个URL（把`{你的数字}`换成上一步记下的）：
+然后构造一个URL：
 ```
-http://192.168.1.1:8080/telandftpcfg.cmd?action=add&telusername=admin&telpwd=admin&telport=23&telenable=1&ftpusername=useradmin&ftppwd=ftpadmin&ftpport=21&ftpenable=1&set3_sessionKey={你的数字}
+http://192.168.1.1:8080/telandftpcfg.cmd?action=add&telusername=admin&telpwd=admin&telport=23&telenable=1&ftpusername=useradmin&ftppwd=ftpadmin&ftpport=21&ftpenable=1&set3_sessionKey={刚刚记下来的数字}
 ```
 
-PS：如果页面没有报错，而这显示了正常的页面，就代表成功
+我们只需要打开这个页面就行了，并不需要做什么操作。
 
 ---
 
-## 第四步：寻找“钥匙”
+打开终端。输入 `telnet 192.168.1.1`。
 
-还记得光猫的MAC地址吗？去这个网站：
-```
-https://mao.trustavo.com/mac_a1
-```
+连上了会问你要账号密码：`admin` / `admin`。看到 `$` 提示符，前往`https://mao.trustavo.com/mac_a1`，输入光猫的MAC地址。它会返回三种可能的SU密码。
+当 `$` 变成 `#` ——恭喜，你已经拿到root权限了。
 
-输入MAC，它会给你**三种可能的SU密码**。**都记下来，总有一把能开锁。
+接下来，输入这两条命令：
 
-
-
----
-
-## 第五步：走进“后门”
-
-打开你的终端（Windows用户按Win+R，输入cmd；Mac用户开终端），输入：
-```bash
-telnet 192.168.1.1
-```
-
-**如果提示“没有telnet”：**
-- Windows：去控制面板→程序和功能→启用或关闭Windows功能（更直接点的方法：Win+R 输入`optionalfeatures`），勾上“Telnet客户端”
-- Mac：`brew install telnet`
-
-连接成功后：
-```
-login: admin
-password: admin
-```
-
-看到`$`提示符了？好，输入：
-```
-su
-```
-
-然后，把那三种SU密码一个个试过去。当`$`变成`#`的那一刻——**成了！**
-
----
-
-## 第六步：修改并获取超级密码
-
-在`#`权限下，输入：
 ```bash
 qoecmd telecomadmin set
 qoecmd telecomadmin get
 ```
 
-**注意：** 第一条命令会把超级密码**重置**为默认值。第二条命令你就是查看当前密码。
+回到浏览器，打开登录页，用户名填 `telecomadmin`，密码填 `nE7jA%5m`。回车。
+至此，超密获取成功。
 
+接下来你可以：
 
----
-
-## 最后一步：验证
-
-回到浏览器，访问：
-```
-http://192.168.1.1:8080/login.html
-```
-输入：
-- 用户名：`telecomadmin`
-- 密码：`nE7jA%5m`
-
-按下回车——欢迎来到光猫的“完整版后台”。
-
----
-
-参考资料：
-[1] https://www.chinadsl.net/thread-180767-1-1.html
-[2] https://wwr650.github.io/blog/posts/%E4%B8%AD%E5%9B%BD%E7%94%B5%E4%BF%A1%E5%85%89%E7%8C%ABTEWA-1100E%E8%8E%B7%E5%8F%96%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98%E5%AF%86%E7%A0%81/
-[3] https://www.chinadsl.net/thread-178063-1-1.html
+改桥接、调整 WAN 配置、配置 DMZ、研究 NAT或者~~看看运营商到底在后台藏了些什么~~又或者~~什么都不改，只是单纯地看看~~。
