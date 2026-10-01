@@ -4,68 +4,67 @@
 import { extendedConfig } from "@/config.ts";
 
 interface Props {
-	path: string;
+  path: string;
 }
 
 const config = {
-	el: "#twikoo-container",
-	path: Astro.props.path,
-	envId: extendedConfig.twikoo.envId,
+  el: "#twikoo-container",
+  path: Astro.props.path,
+  envId: extendedConfig.twikoo.envId,
 };
 ---
 
 <div id="comment">
-  <button 
-    id="load-comment-btn" 
+  <button
+    id="load-comment-btn"
     class="btn-regular rounded-lg h-10 gap-2 px-3 font-bold active:scale-95"
   >
-  加载评论
+    加载评论
   </button>
-  
+
   <div id="twikoo-container" class="hidden mt-4"></div>
 </div>
 
 <script define:vars={{ config }}>
-  
-  document.getElementById('load-comment-btn').addEventListener('click', async () => {
-    const btn = document.getElementById('load-comment-btn');
-    const container = document.getElementById('twikoo-container');
-    
-    btn.textContent = '加载中...';
-    btn.disabled = true;
-    
-    try {
+  document
+    .getElementById("load-comment-btn")
+    .addEventListener("click", async () => {
+      const btn = document.getElementById("load-comment-btn");
+      const container = document.getElementById("twikoo-container");
+
+      btn.textContent = "加载中...";
+      btn.disabled = true;
+
+      try {
         // 不检测，每次都重新加载！
-      // 反正 Swup 已经把之前的 DOM 都清理了
-     
+        // 反正 Swup 已经把之前的 DOM 都清理了
+
         // 创建script标签加载twikoo
         await new Promise((resolve, reject) => {
-          const script = document.createElement('script');
-          script.src = 'https://jsd.onmicrosoft.cn/gh/yoghurtlee-thu/customcdn@352853c/js/twikoo/1_6_39.min.js';
+          const script = document.createElement("script");
+          script.src = "/twikoo.min.js";
           script.onload = resolve;
-          script.onerror = () => reject(new Error('Twikoo脚本加载失败'));
+          script.onerror = () => reject(new Error("Twikoo脚本加载失败"));
           document.head.appendChild(script);
         });
-        
+
         // 额外等待确保twikoo完全初始化
-        await new Promise(resolve => setTimeout(resolve, 300));
-      
-      
-      if (typeof twikoo === 'undefined') {
-        throw new Error('Twikoo未正确初始化');
+        await new Promise((resolve) => setTimeout(resolve, 300));
+
+        if (typeof twikoo === "undefined") {
+          throw new Error("Twikoo未正确初始化");
+        }
+
+        container.classList.remove("hidden");
+        twikoo.init({
+          ...config,
+          lang: "zh-CN",
+        });
+        btn.remove();
+      } catch (err) {
+        btn.textContent = "加载失败，点击重试";
+        btn.disabled = false;
+        console.error("评论加载失败:", err);
       }
-      
-      container.classList.remove('hidden');
-      twikoo.init({
-        ...config,
-        lang: 'zh-CN',
-        
-      });
-      btn.remove();
-    } catch (err) {
-      btn.textContent = '加载失败，点击重试';
-      btn.disabled = false;
-      console.error('评论加载失败:', err);
-    }
-  });
+    });
 </script>
